@@ -3,8 +3,8 @@
 			this.canvasElement = canvas;
 			this.canvas;
 
-			this.canvas.width = width || window.innerWidth;
-			this.canvas.height = height || window.innerHeight;
+			this.width = width || window.innerWidth;
+			this.height = height || window.innerHeight;
 		}
 
 		//Create canvas
@@ -46,10 +46,10 @@
 		}	
 
 		//set canvas dimentions
-		Game.prototype.setCanvasDimentions = function()
+		Game.prototype.setCanvasDimentions = function(width, height)
 		{
-			this.canvas.width = width || window.innerWidth;
-			this.canvas.height = height || window.innerHeight;
+			this.width = width || window.innerWidth;
+			this.height = height || window.innerHeight;
 		}
 
 		//Get canvas

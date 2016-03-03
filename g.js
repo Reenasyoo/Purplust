@@ -1,3 +1,4 @@
+Purpl = {}
 
 	Game = function(canvas,width,height){
 			this.canvasElement = canvas;
@@ -64,3 +65,5 @@
 		{
 			return canvas.getContext('2d');
 		}
+
+Purpl.Game = Game;

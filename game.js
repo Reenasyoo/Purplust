@@ -28,7 +28,21 @@
 		}
 	})();
 
-game = new Game("canvas");
+//Input
+var keysDown = {};
+
+var canInput = false;
+
+window.addEventListener('keydown', function(e) {
+    keysDown[e.keyCode] = true;
+    //console.log("true");
+});
+window.addEventListener('keyup', function(e) {
+    delete keysDown[e.keyCode];
+});
+
+
+game = new Purpl.Game("canvas");
 game.Initialize();
 
 	var update = function()

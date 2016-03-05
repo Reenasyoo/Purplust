@@ -8,18 +8,29 @@ Entity = function(x, y, width, height, speed)
 	//this is first speed
 	//it eventualy will calculate itself from stats
 	this.speed = speed || 25;
+
+	this.sprite;
 }
+
+	Entity.prototype.setSprite = function(sprite)
+	{
+		this.sprite = sprite;
+		return this.sprite;
+	}
 
 	Entity.prototype.move = function()
 	{
 		
 	}
 
+
+
 Purpl.Entity = Entity; 
 
 Actor = function(x, y, width, height, speed){
 		
 		this.entity = new Purpl.Entity(x, y, width, height, speed);
+		
 
 		this.jumping = false;
 		this.falling = false;
@@ -73,6 +84,8 @@ Actor = function(x, y, width, height, speed){
 
 	}
 
+
+	//refactor this!!!
 	Actor.prototype.draw = function(context) 
 	{
 		
@@ -81,13 +94,7 @@ Actor = function(x, y, width, height, speed){
 		
 	}
 
-	Actor.prototype.Anim = function(context)
-	{
-		var img = new Image();
-		img.src = 'assets/dud.png';
-		context.drawImage(img, 0, 0,  this.width, this.height, this.left, this.top, this.width, this.height);
-	}
-
+	//refacator this!!!
 	Actor.prototype.tileCollide = function(cordX, cordY)
 	{
 
@@ -108,14 +115,17 @@ Actor = function(x, y, width, height, speed){
 	{
 		this.velocityY  -= this.force;
 		this.jumping = true;
+		//this.falling = true;
 	}
 
 	Actor.prototype.Fall = function()
 	{
 		this.velocityY += this.tempGravity;
-		this.falling = true;
+		
+		//this.jumping = false;
 	}
 
+	//thiw propably we dont need here
 	Actor.prototype.set = function(left, top, width, height, speed)
 	{
 		this.left = left;
@@ -125,7 +135,7 @@ Actor = function(x, y, width, height, speed){
 		this.speed = speed;
 	}
 
-	Actor.prototype.update = function(step)
+	Actor.prototype.move = function(step)
 	{
 		//Jump
 		if (32 in keysDown && !this.jumping && !this.falling)
@@ -150,8 +160,19 @@ Actor = function(x, y, width, height, speed){
 		this.top += this.velocityY * step;
 		this.left += this.velocityX * step;
 
+	}
+	//refactor this
+	Actor.prototype.update = function(step)
+	{
+		
+		//mby change this
+		this.move(step);
 
 		//COLLISION
+		/*
+			maybe we should change moust of this
+			
+		*/
 
 		var cX = pixelToTileCord(this.camera.viewportX, 32);
 		var cY = pixelToTileCord(this.camera.viewportY, 32);

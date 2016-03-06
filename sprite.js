@@ -1,3 +1,14 @@
+Sprite = function()
+{
+	//change everywere this with rectangle class
+	//or triangle or circle class
+	//x
+	//y
+	//width
+	//height
+}
+
+
 	//need to make animation
 	Entity.prototype.Anim = function(context)
 	{

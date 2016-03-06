@@ -6,6 +6,9 @@ Sprite = function()
 	//y
 	//width
 	//height
+
+	//sprite image source file
+	this.sprite;
 }
 
 

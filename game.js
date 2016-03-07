@@ -42,24 +42,45 @@ window.addEventListener('keyup', function(e) {
 });
 
 
+
+/*
+update draw and gameloop functions should be in game class
+so that they wouldnt be needed to redefine every time
+in this case we need to make some entity arrays, resource arrays,
+world and world layer arrays and add them to game.
+example:
+
+	#we make game object
+	game = new Purpl.Game("canvas");
+	#initialize settings
+	game.Initialize();
+	#run the game
+	game.run();
+
+		game.run/start/go ()
+		{
+			game.update(deltaTime);
+			{
+				this.delta time / maybe timer function hmm!??!
+			}
+			game.draw();
+			{
+				game.context blah blah
+			}
+			requestAnimationFrame(gameloop);
+		}
+
+
+*/
 game = new Purpl.Game("canvas");
 game.Initialize();
 
-	var update = function()
-	{
-
-	}
-
-	var draw = function()
-	{
-
-	}
-
-	var gameloop = function ()
-	{
-		update();
-		draw();
-		requestAnimationFrame(gameloop);
-	}
-
+var update = function(){}
+var draw = function(){}
+var gameloop = function ()
+{
+	update();
+	draw();
 	requestAnimationFrame(gameloop);
+}
+gameloop();

@@ -1,7 +1,10 @@
 /*
-    TODO
-    CECK IF RESOURCE NAME IS STRING OR SMTH WITH THAT IDEA
-    #
+    TODO:
+        #CECK IF RESOURCE NAME IS STRING OR SMTH WITH THAT IDEA
+        #ADD AUDIO FILES
+        #ADD VIDEO FILES
+        #ADD MODELS ??
+        #WHAT ELSE>?
 */
 ResourceManager = function()
 {

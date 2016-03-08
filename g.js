@@ -49,8 +49,8 @@ Purpl = {}
 		//set canvas dimentions
 		Game.prototype.setCanvasDimentions = function(width, height)
 		{
-			this.width = width || window.innerWidth;
-			this.height = height || window.innerHeight;
+			this.canvas.width = width || window.innerWidth;
+			this.canvas.height = height || window.innerHeight;
 		}
 
 		//Get canvas
@@ -61,9 +61,12 @@ Purpl = {}
 		}
 
 		//get context
-		Game.prototype.getContext = function(canvas)
-		{
-			return canvas.getContext('2d');
+		//USE
+		//g.getContext()
+		Game.prototype.getContext = function()
+		{	
+			//chaneged this. from -  param =  canvas
+			return this.canvas.getContext('2d');
 		}
 
 Purpl.Game = Game;

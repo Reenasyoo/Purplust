@@ -72,15 +72,24 @@ example:
 
 
 */
+A = new ResourceManager();
+A.load_Resource("image.png");
 game = new Purpl.Game("canvas");
 game.Initialize();
 
 var update = function(){}
-var draw = function(){}
+var draw = function(ctx){
+	
+	ctx.drawImage(A.get("image.png"), 0,0, 200, 200);
+}
 var gameloop = function ()
 {
 	update();
-	draw();
+	draw(game.getContext());
 	requestAnimationFrame(gameloop);
 }
+
+A.loadAll(function() {
+	gameloop();
+});
 gameloop();

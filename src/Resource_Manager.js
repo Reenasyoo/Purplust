@@ -5,6 +5,7 @@
         #ADD VIDEO FILES
         #ADD MODELS ??
         #WHAT ELSE>?
+        #ABILITY TO CHANGE RESOURCE PATH'S OR LOAD FROM SOME GAME SETTINGS??
 */
 ResourceManager = function()
 {
@@ -14,8 +15,8 @@ ResourceManager = function()
     this.errorCount = 0;
     this.imageTypes = ['png', 'jpg'];
     this.audioTypes = [ 'wav', 'mp3'];
-    this.audioPath = 'audio';
-    this.imagePath = 'images';
+    this.audioPath = 'src/resources/audio';
+    this.imagePath = 'src/resources/images';
 }
 
 ResourceManager.prototype.load_Resource = function(resourceName, path)

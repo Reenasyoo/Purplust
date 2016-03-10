@@ -1,5 +1,7 @@
-Entity = function(x, y, width, height, speed)
-{
+Entity = function(x, y, width, height, map)
+{	
+	this.map = map;
+
 	this.x = x; 
 	this.y = y;
 	this.width = width;
@@ -13,7 +15,7 @@ Entity = function(x, y, width, height, speed)
 
 	//this is first speed
 	//it eventualy will calculate itself from stats
-	this.speed = speed || 25;
+	//this.speed = speed || 25;
 
 	//this could be CONSTANT or we calcuate it and put it in pysic
 	this.friction = 1.5;
@@ -43,7 +45,7 @@ Entity = function(x, y, width, height, speed)
 
 	//Should make it more generic
 	//BUT HOW?
-	Entity.prototype.move = function()
+	Entity.prototype.move = function(dt)
 	{	
 	/*
 		//should do smth about this
@@ -52,45 +54,52 @@ Entity = function(x, y, width, height, speed)
 
 		if(move.left)
 		{
-			this.velocityX -= this.acceleration * step;
+			this.velocityX -= this.acceleration * dt;
 		}
 
 		if(move.right)
 		{
-			this.velocityX += this.acceleration * step;
+			this.velocityX += this.acceleration * dt;
 		}
 
 		if(move.up)
 		{
-			this.velocityY -= this.acceleration * step;
+			this.velocityY -= this.acceleration * dt;
 		}
 		if(move.down)
 		{
-			this.velocityY += this.acceleration * step;
+			this.velocityY += this.acceleration * dt;
 		}
 		if(move.jump)
 		{
 			Jump();
 		}
 	*/	
+		//Jump
+		if (32 in keysDown && !this.jumping && !this.falling)
+		{
+			this.Jump();
+		}
+		
 		//left
 		if (65 in keysDown)
 		{
-			this.velocityX -= this.acceleration * step;
+			this.velocityX -= this.acceleration * dt;
 		}
 
 		//Right
 		if(68 in keysDown)
 		{
-			this.velocityX += this.acceleration * step;
+			this.velocityX += this.acceleration * dt;
 		}
 
 		//Friction for smooth slowing down
-		this.velocityX -= this.velocityX * this.friction * step;
+		this.velocityX -= this.velocityX * this.friction * dt;
 
 		//Update entity position from input
-		this.x += this.velocityY * step;
-		this.y += this.velocityX * step;
+		this.y += this.velocityY * dt;
+		this.x += this.velocityX * dt;
+
 	}
 	//working tilebased collision with gravity
 	//have bugs:
@@ -99,15 +108,16 @@ Entity = function(x, y, width, height, speed)
 	{
 		//COLLISION
 
-		var nextTop 	= this.velocityY * step;
-		var nextLeft 	= this.velocityX * step;
-		var tileLeft 	= pixelToTileCord(this.left, 32);
-		var tileTop 	= pixelToTileCord(this.top, 32);
+		var nextTop 	= this.velocityY * dt;
+		var nextLeft 	= this.velocityX * dt;
+		var tileLeft 	= pixelToTileCord(this.x, 32);
+		var tileTop 	= pixelToTileCord(this.y, 32);
+
 		/*
-		var block 		= this.tileCollide(this.left, this.top);
-		var right 		= this.tileCollide(this.left + this.width, this.top);
-		var down 		= this.tileCollide(this.left, this.top + this.height);
-		var diag 		= this.tileCollide(this.left + this.width, this.top + this.height);
+		var block 		= this.tileCollide(this.x, this.y);
+		var right 		= this.tileCollide(this.x + this.width, this.y);
+		var down 		= this.tileCollide(this.x, this.y + this.height);
+		var diag 		= this.tileCollide(this.x + this.width, this.y + this.height);
 		*/
 
 		var block 		= this.tileCollide(tileLeft, tileTop);
@@ -115,8 +125,8 @@ Entity = function(x, y, width, height, speed)
 		var down 		= this.tileCollide(tileLeft, tileTop + 1);
 		var diag 		= this.tileCollide(tileLeft + 1, tileTop + 1);
 
-		var overlapX 	= this.left % 32;
-		var overlapY 	= this.top % 32;
+		var overlapX 	= this.x % 32;
+		var overlapY 	= this.y % 32;
 
 
 		//Gravity check
@@ -126,7 +136,7 @@ Entity = function(x, y, width, height, speed)
 		if(this.velocityY < 0){
 			if ((block && !down) || (right && !diag && overlapX))
 			{
-				this.top 	= tileToPixelCord(tileTop + 1, 32);
+				this.y 	= tileToPixelCord(tileTop + 1, 32);
 				this.velocityY 	= 0;
 				block 		= down;
 				right 		= diag;
@@ -138,7 +148,7 @@ Entity = function(x, y, width, height, speed)
 		if (this.velocityY > 0){
 			if((down && !block) || (diag && !right && overlapX))
 			{
-				this.top = tileToPixelCord(tileTop, 32);
+				this.y = tileToPixelCord(tileTop, 32);
 				this.velocityY = 0;
 				this.falling = false;
 				this.jumping = false;
@@ -150,7 +160,7 @@ Entity = function(x, y, width, height, speed)
 		if(this.velocityX < 0){
 			if ((block && !right) || ( down && !diag && overlapY))
 			{
-				this.left = tileToPixelCord(tileLeft +1, 32);
+				this.x = tileToPixelCord(tileLeft +1, 32);
 				this.velocityX = 0;
 			}
 		}
@@ -159,7 +169,7 @@ Entity = function(x, y, width, height, speed)
 		if(this.velocityX > 0){
 			if ((right && !block) || ( !down && diag && overlapY))
 			{
-				this.left = tileToPixelCord(tileLeft , 32);
+				this.x = tileToPixelCord(tileLeft , 32);
 				this.velocityX = 0;
 			}
 		}

@@ -70,7 +70,29 @@ var map1 = {
 		tileHeight : 30,
 	}
 
+    var ground = {
+    	mapArray : [
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,2,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,2,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,2,
+        1 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 0 , 2 , 2 , 0 , 0 , 2 , 2 , 2 ,1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,2,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,2,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,2,
+        1 , 2 , 2 , 2 , 0 , 0 , 2 , 2 , 2 , 0 , 2 , 2 , 2 , 0 , 0 , 0 , 0 , 2 ,1,
+        1 , 2 , 2 , 2 , 0 , 0 , 2 , 2 , 2 , 0 , 2 , 2 , 2 , 0 , 0 , 0 , 2 , 1 ,1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 1 ,1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 1 ,1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 2 , 2 ,1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 ,1 , 1 , 1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 2 , 2 , 2 , 2 , 1 ,1,
+        1 , 0 , 0 , 0 , 0 , 2 , 2 , 0 , 0 , 0 , 0 , 2 , 2 , 2 , 1 , 1 , 1 , 1 ,1,
+        1 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 ,2,
+        1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1,],
 
+        tileWidth : 19,
+        tileHeight : 17,
+    }
 
 /*
 lets cut this baby open and merge it together with that #input thing
@@ -132,35 +154,46 @@ example:
 
 
 */
+var last = 0; // last frame timestamp
+var now = 0; // current timestamp
+var dt = now-last; // time between frames
+
+
 A = new ResourceManager();
 A.load_Resource("image.png");
 game = new Purpl.Game("canvas");
 game.Initialize();
 
-m = new Map(map1);
-e = new Entity(20,20 , 32, 32);
+m = new Map(ground);
+e = new Entity(32,32, 32, 32, m);
 
 g = new GUI(game.getContext());
 
-var update = function(){
+var update = function(dt){
 
-	//e.update();
+	e.move(dt);
+	e.collision(dt);
 }
 var draw = function(ctx){
 	
+	ctx.clearRect(0,0, game.canvas.width, game.canvas.height);
 	//ctx.drawImage(A.get("image.png"), 0,0, 200, 200);
 	m.draw(ctx);
 	e.draw(ctx);
 
-	ctx.fillStyle = "white";
-	ctx.fillRect(0, game.canvas.height-100, game.canvas.width, 100);
+	//ctx.fillStyle = "white";
+	//ctx .fillRect(0, game.canvas.height-100, game.canvas.width, 100);
 
-	g.bar("Health", 20, game.canvas.height - 40, 40, 20, 5, 10);
-	g.bar("Special", game.canvas.width - 420, game.canvas.height - 40, 40, 20, 6, 10)
+	//g.bar("Health", 20, game.canvas.height - 40, 40, 20, 5, 10);
+	//g.bar("Special", game.canvas.width - 420, game.canvas.height - 40, 40, 20, 6, 10)
 }
 var gameloop = function ()
-{
-	update();
+{	
+	now = Date.now(); // <-- current timestamp (in milliseconds)
+    dt = (now-last)/1000; // <-- time between frames (in seconds)
+    last = now; // <-- store the current timestamp for further evaluation in next frame/step
+
+	update(dt);
 	draw(game.getContext());
 	requestAnimationFrame(gameloop);
 }

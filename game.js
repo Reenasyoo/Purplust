@@ -85,10 +85,10 @@ var map1 = {
         1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 1 ,1,
         1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 2 , 2 ,1,
         1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 ,1 , 1 , 1,
-        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 2 , 2 , 2 , 2 , 1 ,1,
-        1 , 0 , 0 , 0 , 0 , 2 , 2 , 0 , 0 , 0 , 0 , 2 , 2 , 2 , 1 , 1 , 1 , 1 ,1,
+        1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 2 , 0 , 2 , 2 , 1 ,1,
+        1 , 0 , 0 , 0 , 0 , 2 , 2 , 0 , 0 , 0 , 0 , 2 , 2 , 1 , 0 , 0 , 0 , 0 ,0,
         1 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 ,2,
-        1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1,],
+        1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 , 1 , 1 , 1 , 1 , 1, 1],
 
         tileWidth : 19,
         tileHeight : 17,
@@ -133,14 +133,15 @@ world and world layer arrays and add them to game.
 example:
 
 	#we make game object
-	game = new Purpl.Game("canvas");
-	#initialize settings
-	game.Initialize();
+	game = new Purpl.Game("canvas")
 	#run the game
 	game.run();
 
 		game.run/start/go ()
-		{
+		{	
+			push custom functions or callback function
+			were we define custom functions
+			
 			game.update(deltaTime);
 			{
 				this.delta time / maybe timer function hmm!??!
@@ -148,6 +149,7 @@ example:
 			game.draw();
 			{
 				game.context blah blah
+				
 			}
 			requestAnimationFrame(gameloop);
 		}
@@ -161,44 +163,51 @@ var dt = now-last; // time between frames
 
 A = new ResourceManager();
 A.load_Resource("image.png");
+A.load_Resource("sprite.png");
 game = new Purpl.Game("canvas");
-game.Initialize();
+//game.Initialize();
 
 m = new Map(ground);
 e = new Entity(32,32, 32, 32, m);
 
-g = new GUI(game.getContext());
+
+g = new GUI(game.context);
 
 var update = function(dt){
 
-	e.move(dt);
-	e.collision(dt);
+	e.update();
 }
 var draw = function(ctx){
 	
 	ctx.clearRect(0,0, game.canvas.width, game.canvas.height);
-	//ctx.drawImage(A.get("image.png"), 0,0, 200, 200);
+	
 	m.draw(ctx);
+	
 	e.draw(ctx);
 
+	//ctx.drawImage(A.get("sprite.png"), 0,0, 200, 200);
+
 	//ctx.fillStyle = "white";
-	//ctx .fillRect(0, game.canvas.height-100, game.canvas.width, 100);
+	//ctx.fillRect(0, game.canvas.height-100, game.canvas.width, 100);
 
 	//g.bar("Health", 20, game.canvas.height - 40, 40, 20, 5, 10);
 	//g.bar("Special", game.canvas.width - 420, game.canvas.height - 40, 40, 20, 6, 10)
 }
 var gameloop = function ()
 {	
+	window.requestAnimationFrame(gameloop);
 	now = Date.now(); // <-- current timestamp (in milliseconds)
     dt = (now-last)/1000; // <-- time between frames (in seconds)
     last = now; // <-- store the current timestamp for further evaluation in next frame/step
-
+    
+    e.setSprite(A.get("sprite.png"));
 	update(dt);
-	draw(game.getContext());
-	requestAnimationFrame(gameloop);
+	draw(game.context);
+	
 }
 
 A.loadAll(function() {
+
 	gameloop();
 });
 gameloop();

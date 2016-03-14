@@ -1,45 +1,51 @@
-Sprite = function()
+Sprite = function(options)
 {
-	//change everywere this with rectangle class
-	//or triangle or circle class
-	//x
-	//y
-	//width
-	//height
+	var that = {},
+			frameIndex = 0,
+			tickCount = 0,
+			ticksPerFrame = options.ticksPerFrame || 0,
+			numberOfFrames = options.numberOfFrames || 1;
+		
+		that.width = options.width;
+		that.height = options.height;
+		that.sprite = options.sprite;
+		that.x = options.x;
+		that.y = options.y;
+		
+		that.update = function () {
 
-	//sprite image source file
-	this.sprite;
+			tickCount += 1;
+
+            if (tickCount > ticksPerFrame) {
+
+				tickCount = 0;
+				
+                // If the current frame index is in range
+                if (frameIndex < numberOfFrames - 1) {	
+                    // Go to the next frame
+                    frameIndex += 1;
+                } else {
+                    frameIndex = 0;
+                }
+            }
+        };
+		
+		that.draw = function (context) {
+		  // Draw the animation
+		  //this.update();
+		  context.drawImage(
+		    that.sprite,
+		    frameIndex * that.width,
+		    0,
+		    that.width,
+		    that.height,
+		    that.x,
+		    that.y,
+		    that.width,
+		    that.height);
+		};
+		
+		return that;
 }
 
-
-	//need to make animation
-	Entity.prototype.Anim = function(context)
-	{
-		var img = new Image();
-		img.src = 'assets/dud.png';
-		context.drawImage(img, 0, 0,  this.width, this.height, this.left, this.top, this.width, this.height);
-	}
-
-
-
-	Sprite = function(asset, frames, animSpeed)
-	{
-		this.asset = asset;
-
-		this.frames = frames; //frames in animation
-		this.animationSpeed = animSpeed;
-
-		this.counter = 0;
-	}
-
-	Sprite.prototype.update = function(dt)
-	{
-		this.counter += this.animationSpeed * dt;
-	}
-
-	Sprite.prototype.draw = function()
-	{
-		for (var i = 0; i < this.frames.length; i++) {
-			
-		}
-	}
+	

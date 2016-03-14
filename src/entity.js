@@ -1,4 +1,4 @@
-Entity = function(x, y, width, height, map)
+Entity = function(x, y, width, height, map, sprite)
 {	
 	this.map = map;
 
@@ -34,20 +34,51 @@ Entity = function(x, y, width, height, map)
 	this.falling = false;
 	this.canMove = false;
 
-	this.sprite;
+	this. sprite;
+	//this. spriteObj;
+	//this.sprite = new Sprite(sprite,[1,2,3], 3, this.x, this.y, this.width, this.height);
 }
 
 	Entity.prototype.setSprite = function(sprite)
 	{
-		this.sprite = sprite;
-		return this.sprite;
+		//this.sprite = sprite;
+		this.sprite = Sprite({
+			sprite :sprite,
+			x: this.x, 
+			y: this.y,
+			width: this.width,
+			height: this.height,
+			numberOfFrames : 3,
+			ticksPerFrame : 1
+		});
 	}
+	Entity.prototype.draw = function(context, color) 
+	{
+	/*
+		context.fillStyle = color || "green";
+		context.fillRect(this.x, this.y , this.width, this.height);
+	*/	
+		this.sprite.draw(context);
+		
+		//context.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width,this.height);
+	}
+	Entity.prototype.update = function()
+	{
+		this.move(dt);
+		this.collision(dt);
+		this.sprite.update();
+	}
+
 
 	//Should make it more generic
 	//BUT HOW?
 	Entity.prototype.move = function(dt)
-	{	
-	/*
+	{
+		
+
+
+
+		/*
 		//should do smth about this
 		//and move.left, right ..
 		var move;
@@ -85,12 +116,14 @@ Entity = function(x, y, width, height, map)
 		if (65 in keysDown)
 		{
 			this.velocityX -= this.acceleration * dt;
+			this.sprite.update();
 		}
 
 		//Right
 		if(68 in keysDown)
 		{
 			this.velocityX += this.acceleration * dt;
+			this.sprite.update();
 		}
 
 		//Friction for smooth slowing down
@@ -200,10 +233,6 @@ Entity = function(x, y, width, height, map)
 		this.falling = true;
 	}
 
-	Entity.prototype.draw = function(context, color) 
-	{
-		context.fillStyle = color || "green";
-		context.fillRect(this.x, this.y , this.width, this.height);
-	}
+	
 
 //Purpl.Entity = Entity; 

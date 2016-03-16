@@ -39,17 +39,16 @@ var e = new Entity({
 	width : 32,
 	height : 32,
 	map : m,
-	sprite : new Sprite({
-			sprite : A.get("sprite.png"),
-			x: this.x, 
-			y: this.y,
-			width: this.width,
-			height: this.height,
-			numberOfFrames : 3,
-			ticksPerFrame : 1,
-		}),
-
 });
+e.sprite = new Sprite({
+            image : A.get("sprite.png"),
+            x: e.x, 
+            y: e.y,
+            width: e.width,
+            height: e.height,
+            numberOfFrames : 3,
+            ticksPerFrame : 1,
+        }),
 
 game.entities.push(e);
 

@@ -10,7 +10,7 @@ Sprite = function(options)
 		
 		sprite.width = options.width;
 		sprite.height = options.height;
-		sprite.sprite = options.sprite;
+		sprite.image = options.image;
 		sprite.x = options.x;
 		sprite.y = options.y;
 		
@@ -33,10 +33,9 @@ Sprite = function(options)
         };
 		
 		sprite.draw = function (context) {
-		  // Draw the animation
-		  //this.update();
+			
 		  context.drawImage(
-		    sprite.sprite,
+		    sprite.image,//!!!
 		    frameIndex * sprite.width,
 		    0,
 		    sprite.width,

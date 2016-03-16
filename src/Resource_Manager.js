@@ -27,10 +27,8 @@ ResourceManager.prototype.load_Resource = function(resourceName, path)
 	{
 		path = this.getPath(resourceName);
 	}
-
 	var link = path + "/" + resourceName;
 	this.downloadQueue.push(link);
-	
 }
 
 ResourceManager.prototype.getPath = function(resourceName)
@@ -67,11 +65,15 @@ ResourceManager.prototype.loadAll = function(callback) {
     for (var i = 0; i < this.downloadQueue.length; i++) {
         var path = this.downloadQueue[i];
         var img = new Image();
+        img.src = path;
+        this.cache[path] = { image: img, loaded: false};
+
         var that = this;
         img.addEventListener("load", function() {
             this.successCount += 1;
             if (that.isLoaded()) {
-        		callback();
+        		this.cache[path].loaded = true;
+                callback();
     		}
         }, false);
         img.addEventListener("error", function() {
@@ -82,8 +84,22 @@ ResourceManager.prototype.loadAll = function(callback) {
     	}, false);
         //type is used for path determination if pat is not declareted in resource loder
         //img.src = path + name + type
-        img.src = path;
-        this.cache[path] = img;
+        
+
+        img.onload = function()
+        {
+            this.successCount += 1;
+            if (that.isLoaded()) {
+                callback();
+            }
+        }
+        img.onerror = function()
+        {
+            this.errorCount += 1;
+            if (that.isLoaded()) {
+                callback();
+            }
+        }
     }
 }
 
@@ -94,12 +110,3 @@ ResourceManager.prototype.get = function(resourceName) {
     var link = path + "/" + resourceName;
     return this.cache[link];
 }
-/*
-//USAGE
-var ASSET_MANAGER = new AssetManager();
-ASSET_MANAGER.load_Resource('img/earth.png');
-ASSET_MANAGER.downloadAll(function() {
-    var sprite = ASSET_MANAGER.getAsset('img/earth.png');
-    ctx.drawImage(sprite, x - sprite.width/2, y - sprite.height/2);
-});
-*/

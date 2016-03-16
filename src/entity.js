@@ -40,10 +40,12 @@ Entity = function(options)
 	entity.draw = function(context, color) 
 	{
 	
-		context.fillStyle = color || "green";
-		context.fillRect(this.x, this.y , this.width, this.height);
+		//context.fillStyle = color || "green";
+		//context.fillRect(this.x, this.y , this.width, this.height);
+		console.log(this.sprite);
+		this.sprite.update();
+		this.sprite.draw(context);
 		
-		//this.sprite.draw(context);
 
 		
 		//context.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width,this.height);

@@ -1,11 +1,13 @@
-Entity = function(x, y, width, height, map, sprite)
+Entity = function(options)
 {	
-	this.map = map;
+	var entity = this;
 
-	this.x = x; 
-	this.y = y;
-	this.width = width;
-	this.height = height;
+	this.map = options.map;
+
+	this.x = options.x; 
+	this.y = options.y;
+	this.width = options.width;
+	this.height = options.height;
 
 	//this is calculatinge now in update function
 	//we should maybe calculate it from some were else
@@ -18,94 +20,45 @@ Entity = function(x, y, width, height, map, sprite)
 	//this.speed = speed || 25;
 
 	//this could be CONSTANT or we calcuate it and put it in pysic
-	this.friction = 1.5;
-	this.maxSpeed = 200; // temp 
-
+	this.friction = 0.01;
 	//we should calculate it from actor stats
-	this.acceleration = 200;
+	this.acceleration = 0.0018;
 
-	this.force = 220; //jump acceleration for now
+	this.force = 0.2; //jump acceleration for now
 
 	//put this in world class and return it here or in specific class, or in pysics engine
 	//witch works with world class and world class works with actor/entity class
-	this.tempGravity = 10;
+	this.tempGravity = 0.01;
 
 	this.jumping = false;
 	this.falling = false;
 	this.canMove = false;
 
-	this. sprite;
+	this.sprite;
 	//this. spriteObj;
 	//this.sprite = new Sprite(sprite,[1,2,3], 3, this.x, this.y, this.width, this.height);
-}
-
-	Entity.prototype.setSprite = function(sprite)
+	entity.draw = function(context, color) 
 	{
-		//this.sprite = sprite;
-		this.sprite = Sprite({
-			sprite :sprite,
-			x: this.x, 
-			y: this.y,
-			width: this.width,
-			height: this.height,
-			numberOfFrames : 3,
-			ticksPerFrame : 1
-		});
-	}
-	Entity.prototype.draw = function(context, color) 
-	{
-	/*
+	
 		context.fillStyle = color || "green";
 		context.fillRect(this.x, this.y , this.width, this.height);
-	*/	
-		this.sprite.draw(context);
+		
+		//this.sprite.draw(context);
+
 		
 		//context.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width,this.height);
-	}
-	Entity.prototype.update = function()
+	};
+	entity.update = function(dt, keysDown)
 	{
-		this.move(dt);
-		this.collision(dt);
-		this.sprite.update();
-	}
+		this.move(dt, keysDown);
+		this.collision();
+	};
 
 
 	//Should make it more generic
 	//BUT HOW?
-	Entity.prototype.move = function(dt)
+	entity.move = function(dt, keysDown)
 	{
-		
-
-
-
-		/*
-		//should do smth about this
-		//and move.left, right ..
-		var move;
-
-		if(move.left)
-		{
-			this.velocityX -= this.acceleration * dt;
-		}
-
-		if(move.right)
-		{
-			this.velocityX += this.acceleration * dt;
-		}
-
-		if(move.up)
-		{
-			this.velocityY -= this.acceleration * dt;
-		}
-		if(move.down)
-		{
-			this.velocityY += this.acceleration * dt;
-		}
-		if(move.jump)
-		{
-			Jump();
-		}
-	*/	
 		//Jump
 		if (32 in keysDown && !this.jumping && !this.falling)
 		{
@@ -116,14 +69,14 @@ Entity = function(x, y, width, height, map, sprite)
 		if (65 in keysDown)
 		{
 			this.velocityX -= this.acceleration * dt;
-			this.sprite.update();
+			//this.sprite.update();
 		}
 
 		//Right
 		if(68 in keysDown)
 		{
 			this.velocityX += this.acceleration * dt;
-			this.sprite.update();
+			//this.sprite.update();
 		}
 
 		//Friction for smooth slowing down
@@ -131,18 +84,19 @@ Entity = function(x, y, width, height, map, sprite)
 
 		//Update entity position from input
 		this.y += this.velocityY * dt;
-		this.x += this.velocityX * dt;
+		this.x += this.velocityX  * dt;
 
-	}
+		//console.log(this.x);
+
+	};
 	//working tilebased collision with gravity
 	//have bugs:
 	// #diognal collision
-	Entity.prototype.collision = function(dt)
+	entity.collision = function()
 	{
 		//COLLISION
 
-		var nextTop 	= this.velocityY * dt;
-		var nextLeft 	= this.velocityX * dt;
+
 		var tileLeft 	= pixelToTileCord(this.x, 32);
 		var tileTop 	= pixelToTileCord(this.y, 32);
 
@@ -206,9 +160,9 @@ Entity = function(x, y, width, height, map, sprite)
 				this.velocityX = 0;
 			}
 		}
-	}
+	};
 
-	Entity.prototype.tileCollide = function(cordX, cordY)
+	entity.tileCollide = function(cordX, cordY)
 	{
 		//this.map.tilewidth - we should change this
 		// to some global variable from main game class maybe
@@ -219,20 +173,18 @@ Entity = function(x, y, width, height, map, sprite)
  			this.canMove = !(t == 0);
 		}
 		return this.canMove;
-	}
+	};
 
-	Entity.prototype.Jump = function()
+	entity.Jump = function()
 	{
 		this.velocityY  -= this.force;
 		this.jumping = true;
-	}
+	};
 
-	Entity.prototype.Fall = function()
+	entity.Fall = function()
 	{
 		this.velocityY += this.tempGravity;
 		this.falling = true;
-	}
+	};
 
-	
-
-//Purpl.Entity = Entity; 
+}

@@ -47,7 +47,7 @@ Tile = function(left, top, width, height, context,tileId){
 	}
 
    
-	Map = function(mapData, tileset, width, height){
+	Map = function(mapData, context, width, height){
 
 
 		this.width = width;
@@ -61,9 +61,12 @@ Tile = function(left, top, width, height, context,tileId){
 
 		//this.image = image;
 		//this.tilesize = null;
-		this.tileset = tileset || console.log("tileset hasn't been set");
+		//this.tileset = tileset || console.log("tileset hasn't been set");
 
 		this.world = [];
+
+		this.context = context;
+		
 	}
 
     Map.prototype.getMap = function(x , y){
@@ -122,10 +125,8 @@ Tile = function(left, top, width, height, context,tileId){
         	}
     }
 
-	Map.prototype.draw = function(context)
+	Map.prototype.draw = function()
 	{
-
-		this.context = context;
 	/*
 		!!!!!! get this working !!!!!!
 
@@ -134,6 +135,6 @@ Tile = function(left, top, width, height, context,tileId){
 		} else
 		
 	*/
-			this.drawFromColors(context);
+		this.drawFromColors(this.context);
 		
     }

@@ -1,78 +1,164 @@
-Purpl = {}
-
-	Game = function(canvas,width,height){
-			this.canvasElement = canvas;
-			this.canvas;
-			this.context;
-
-			this.width = width || window.innerWidth;
-			this.height = height || window.innerHeight;
-
-			//calls funcion that initializes canvas
-			this.Initialize();
-			this.setContext(this.canvas);
+// requestAnimationFrame polyfill
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+    (function(){
+		var lastTime = 0;
+		var currTime, timeToCall, id;
+		var vendors = ['ms', 'moz', 'webkit', 'o'];
+		for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+			window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+			window.cancelAnimationFrame =
+			  window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
 		}
-
-		//Create canvas
-		Game.prototype.Initialize = function()
+		if (!window.requestAnimationFrame)
 		{
+			window.requestAnimationFrame = function(callback, element) {
+				currTime = Date.now();
+				timeToCall = Math.max(0, 16 - (currTime - lastTime));
+				id = window.setTimeout(function() { callback(currTime + timeToCall); },
+				  timeToCall);
+				lastTime = currTime + timeToCall;
+				return id;
+			};
+		}
+		if (!window.cancelAnimationFrame)
+		{
+			window.cancelAnimationFrame = function(id) {
+				clearTimeout(id);
+			};
+		}
+	})();
 
-			var canvasString = this.canvasElement;
-			var body = document.getElementsByTagName("body")[0];
 
-			if(typeof(canvasString) == "string")
-			{
-				if(!body.hasAttribute(canvasString))
-				{	
-					this.canvas = document.createElement(canvasString);
+Purpl = function(canvas, width, height)
+{
+	var engine = this;
+	engine.canvasElement = canvas;
+	engine.canvas;
+	engine.context;
+	engine.width = width || window.innerWidth;
+	engine.height = height || window.innerHeight;
 
-					this.setCanvas(this.canvas, canvasString);
-					body.appendChild(this.canvas);
-				}
-				else 
-				{
-					this.canvas = document.getElementById(canvasString);
-				}	
+	engine.keysDown = [];
+
+	engine.time = false;
+
+	engine.entities = [];
+	engine.world = [];
+
+	
+
+	engine.initializeCanvas = function()
+	{	
+		var body = document.getElementsByTagName("body")[0];
+		if(typeof(engine.canvasElement) == "string")
+		{
+			if(!body.hasAttribute(engine.canvasElement))
+			{	
+				engine.canvas = document.createElement(engine.canvasElement);
+				engine.setCanvas(engine.canvas, engine.canvasElement);
+				body.appendChild(engine.canvas);
 			}
 			else 
-			{ 
-				console.log("Canvas Id is not string"); 
+			{
+			engine.canvas = document.getElementById(engine.canvasElement);
 			}
-			
-			//return this.canvas;
+			engine.setContext(engine.canvas);	
 		}
-		//set canvas propperties
-		Game.prototype.setCanvas = function(canvas, cString)
-		{
-			//initialize cavas propertis
-			canvas.setAttribute("id", cString);
-			this.setCanvasDimentions();
-			
-		}	
-		//set canvas dimentions
-		Game.prototype.setCanvasDimentions = function(width, height)
-		{
-			this.canvas.width = width || window.innerWidth;
-			this.canvas.height = height || window.innerHeight;
-		}
-		//set context
-		Game.prototype.setContext = function(canvas)
-		{
-			this.context = canvas.getContext('2d');
-		}
-		//Get canvas
-		Game.prototype.getCanvas = function()
-		{	
-			//For now CONST element ID
-			return this.canvas;
-		}
-		//get context
-		//USE
-		//g.getContext()
-		Game.prototype.getContext = function()
-		{	
-			//chaneged this. from -  param =  canvas
-			return this.canvas.getContext('2d');
+		else 
+		{ 
+			console.log("Canvas Id is not string"); 
 		}
 
-Purpl.Game = Game;
+	}
+
+	engine.Run = function()
+	{
+		engine.initializeCanvas();
+
+		window.addEventListener('resize', engine.setCanvasDimentions, false);
+
+		window.addEventListener('keydown', function(e) {
+    	engine.keysDown[e.keyCode] = true;
+		});
+
+		window.addEventListener('keyup', function(e) {
+    	delete engine.keysDown[e.keyCode];
+		});
+
+		engine.setCanvasDimentions();
+
+		engine.loop();
+	};
+
+	engine.loop = function()
+	{
+		// timing
+        var now = new Date().getTime();
+        var deltaTime = now - (game.time || now);
+        engine.time = now;
+
+        // update engine
+		engine.update(deltaTime);
+		// render engine
+		engine.render();
+		// request next frame
+		window.requestAnimationFrame(engine.loop);
+	}
+
+	engine.update = function(dt)
+	{
+		for (var i = 0; i < engine.entities.length; i++) {
+			engine.entities[i].update(dt, engine.keysDown	);
+		};
+	}
+
+	engine.render = function()
+	{
+		engine.context.clearRect(0,0, engine.width, canvas.height);
+
+		for (var i = 0; i < engine.world.length; i++) {
+			engine.world[i].draw();
+		};
+
+		for (var i = 0; i < engine.entities.length; i++) {
+			engine.entities[i].draw(engine.context);
+
+		};
+	}
+	//set canvas propperties
+	engine.setCanvas = function(canvas, cString)
+	{
+		//initialize cavas propertis
+		canvas.setAttribute("id", cString);
+		engine.setCanvasDimentions();
+	};
+	engine.setContext = function(canvas)
+	{
+		engine.context = canvas.getContext('2d');
+	};
+	//set canvas dimentions
+	engine.setCanvasDimentions = function(width, height)
+	{
+		engine.canvas.width = width || window.innerWidth;
+		engine.canvas.height = height || window.innerHeight;
+		engine.width = width || window.innerWidth;
+		engine.height = height || window.innerHeight;
+	};
+	//Get canvas
+	engine.getCanvas = function()
+	{	
+		//For now CONST element ID
+		return engine.canvas;
+	};
+	//get context
+	engine.getContext = function()
+	{	
+		//chaneged this. from -  param =  canvas
+		return engine.canvas.getContext('2d');
+	};
+
+}
+
+		
+		
+

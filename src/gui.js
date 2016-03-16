@@ -11,22 +11,22 @@ GUI.prototype.draw = function() {
 
 
 GUI.prototype.bar = function(label, x ,y, width, height, lenght,maxLenght) {
-	var i;
-	
-	var maxTextWidth;
+
 	this.text(label,x, y);
+	this.context.save();
 	//border of full bar
 	this.context.fillStyle = "white";
 	this.context.rect(x, y , width * maxLenght, height);
 
 	this.context.stroke();
-	
-	for(i = 0;i < lenght +1; i++)
-	{	
-		//filled bar
-		this.context.fillStyle = "red";
-		this.context.fillRect(x, y , width * i , height);
-	}
+	//we dont need it like this
+	// just maybe change the width 
+		
+	//filled bar
+	this.context.fillStyle = "red";
+	this.context.fillRect(x, y , width * lenght , height);
+	this.context.restore();
+
 }
 
 GUI.prototype.text = function(label, x, y)

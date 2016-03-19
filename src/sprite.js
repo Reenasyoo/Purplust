@@ -32,18 +32,18 @@ Sprite = function(options)
             }
         };
 		
-		sprite.draw = function (context) {
-			
+		sprite.draw = function (context, x, y, width, height) 
+		{	
 		  context.drawImage(
-		    sprite.image,//!!!
+		    sprite.image,
 		    frameIndex * sprite.width,
 		    0,
 		    sprite.width,
 		    sprite.height,
-		    sprite.x,
-		    sprite.y,
-		    sprite.width,
-		    sprite.height);
+		    x,
+		    y,
+		    width,
+		    height);
 		};
 		
 }

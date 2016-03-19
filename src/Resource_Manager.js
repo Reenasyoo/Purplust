@@ -10,7 +10,7 @@
 ResourceManager = function()
 {
 	this.downloadQueue = [];
-	this.cache = {};
+	this.cache = [];
 	this.successCount = 0;
     this.errorCount = 0;
     this.imageTypes = ['png', 'jpg'];
@@ -85,21 +85,6 @@ ResourceManager.prototype.loadAll = function(callback) {
         //type is used for path determination if pat is not declareted in resource loder
         //img.src = path + name + type
         
-
-        img.onload = function()
-        {
-            this.successCount += 1;
-            if (that.isLoaded()) {
-                callback();
-            }
-        }
-        img.onerror = function()
-        {
-            this.errorCount += 1;
-            if (that.isLoaded()) {
-                callback();
-            }
-        }
     }
 }
 
@@ -108,5 +93,5 @@ ResourceManager.prototype.get = function(resourceName) {
     //we should just enter name with type not full path
     path = this.getPath(resourceName);
     var link = path + "/" + resourceName;
-    return this.cache[link];
+    return this.cache[link].image;
 }

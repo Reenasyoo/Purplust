@@ -44,6 +44,7 @@ Purpl = function(canvas, width, height)
 
 	engine.entities = [];
 	engine.world = [];
+	engine.resources = [];
 
 	
 
@@ -73,7 +74,7 @@ Purpl = function(canvas, width, height)
 
 	engine.Run = function()
 	{
-		engine.initializeCanvas();
+		
 
 		window.addEventListener('resize', engine.setCanvasDimentions, false);
 
@@ -107,9 +108,9 @@ Purpl = function(canvas, width, height)
 
 	engine.update = function(dt)
 	{
-		for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[i].update(dt, engine.keysDown	);
-		};
+		//for (var i = 0; i < engine.entities.length; i++) {
+			engine.entities[0].update(dt, engine.keysDown	);
+		//};
 	}
 
 	engine.render = function()
@@ -156,6 +157,30 @@ Purpl = function(canvas, width, height)
 		//chaneged this. from -  param =  canvas
 		return engine.canvas.getContext('2d');
 	};
+	    // load images
+    engine.load = function(images){
+        
+        // load image from url
+        var loadFromUrl = function(url){
+            var img = new Image();
+            img.src = 'src/resources/images/' + url + '.png';
+            game.resources[url] = { image: img, loaded: false };
+            img.onload = function(){
+                game.resources[url].loaded = true;
+            };
+        };
+        
+        // accept array or single resource
+        if(images instanceof Array){
+            for(var i = 0; i < images.length; i++){
+                loadFromUrl(images[i]);
+            }
+        }
+        else{
+            loadFromUrl(images);
+        }
+        
+    };
 
 }
 

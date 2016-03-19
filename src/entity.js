@@ -15,6 +15,8 @@ Entity = function(options)
 	this.velocityX = 0;
 	this.velocityY = 0;
 
+	this.direction = options.direction || 'right';
+
 	//this is first speed
 	//it eventualy will calculate itself from stats
 	//this.speed = speed || 25;
@@ -39,16 +41,26 @@ Entity = function(options)
 	//this.sprite = new Sprite(sprite,[1,2,3], 3, this.x, this.y, this.width, this.height);
 	entity.draw = function(context, color) 
 	{
-	
-		//context.fillStyle = color || "green";
-		//context.fillRect(this.x, this.y , this.width, this.height);
-		console.log(this.sprite);
-		this.sprite.update();
-		this.sprite.draw(context);
+		if(this.direction == 'left')
+		{
+			context.save();
+			//context.translate(this.width/2, this.height/2);
+			context.scale(-1,1);
+			//context.fillStyle = color || "green";
+			//context.fillRect(this.x, this.y , this.width, this.height);
+			this.sprite.draw(context, -this.x - this.width, this.y, this.width, this.height);
+			context.restore();
+		}
+		if( this.direction == 'right')
+		{
+			context.save();
+			//context.translate(this.width/2, this.height/2);
+			//context.fillStyle = color || "green";
+			//context.fillRect(this.x, this.y , this.width, this.height);
+			this.sprite.draw(context, this.x, this.y, this.width, this.height);
+			context.restore();
+		}
 		
-
-		
-		//context.drawImage(this.sprite, 0, 0, this.width, this.height, this.x, this.y, this.width,this.height);
 	};
 	entity.update = function(dt, keysDown)
 	{
@@ -71,16 +83,19 @@ Entity = function(options)
 		if (65 in keysDown)
 		{
 			this.velocityX -= this.acceleration * dt;
-			//this.sprite.update();
+			
+			this.direction = 'left';
+			this.sprite.update();
 		}
 
-		//Right
+		//right
 		if(68 in keysDown)
 		{
 			this.velocityX += this.acceleration * dt;
-			//this.sprite.update();
+			this.direction = 'right';
+			this.sprite.update();
 		}
-
+		//console.log(this.direction);
 		//Friction for smooth slowing down
 		this.velocityX -= this.velocityX * this.friction * dt;
 

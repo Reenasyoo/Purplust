@@ -23,41 +23,36 @@ var ground = {
         tileHeight : 17,
     }
 
-var A = new ResourceManager();
-A.load_Resource("image.png");
-A.load_Resource("sprite.png");
-var game = new Purpl("canvas");
-game.Run();
 
+var game = new Purpl("canvas");
+game.initializeCanvas();
+
+game.load('sprite');
 
 var m = new Map(ground, game.context);
 game.world.push(m);
 
 var e = new Entity({
-	x : 33,
-	y : 33,
-	width : 32,
-	height : 32,
-	map : m,
+    x : 33,
+    y : 33,
+    width : 32,
+    height : 32,
+    map : m,
 });
 e.sprite = new Sprite({
-            image : A.get("sprite.png"),
-            x: e.x, 
-            y: e.y,
+            image : game.resources['sprite'].image,
+            x: 0, 
+            y: 0,
             width: e.width,
             height: e.height,
             numberOfFrames : 3,
-            ticksPerFrame : 1,
-        }),
+            ticksPerFrame : 6,
+});
 
 game.entities.push(e);
+game.Run();
 
 g = new GUI(game.context);
 g.bar("Health", 20, game.canvas.height - 40, 40, 20, 5, 10);
-g.bar("Special", game.canvas.width - 420, game.canvas.height - 40, 40, 20, 6, 10)
+g.bar("Special", game.canvas.width - 420, game.canvas.height - 40, 40, 20, 6, 10);
 
-A.loadAll(function() {
-
-	game.loop();
-	
-});

@@ -32,11 +32,25 @@ Sprite = function(options)
             }
         };
 		
-		sprite.draw = function (context, x, y, width, height) 
+		sprite.drawAnimated = function(context, x, y, width, height) 
 		{	
 		  context.drawImage(
 		    sprite.image,
 		    frameIndex * sprite.width,
+		    0,
+		    sprite.width,
+		    sprite.height,
+		    x,
+		    y,
+		    width,
+		    height);
+		};
+		
+		sprite.draw = function (context, x, y, width, height) 
+		{	
+		  context.drawImage(
+		    sprite.image,
+		    0,
 		    0,
 		    sprite.width,
 		    sprite.height,

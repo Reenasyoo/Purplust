@@ -43,8 +43,10 @@ Purpl = function(canvas, width, height)
 	engine.time = false;
 
 	engine.entities = [];
-	engine.world = [];
 	engine.resources = [];
+	engine.world = false;
+	engine.actor = false;
+	engine.gui = [];
 
 	
 
@@ -74,10 +76,7 @@ Purpl = function(canvas, width, height)
 
 	engine.Run = function()
 	{
-		
-
 		window.addEventListener('resize', engine.setCanvasDimentions, false);
-
 		window.addEventListener('keydown', function(e) {
     	engine.keysDown[e.keyCode] = true;
 		});
@@ -85,10 +84,17 @@ Purpl = function(canvas, width, height)
 		window.addEventListener('keyup', function(e) {
     	delete engine.keysDown[e.keyCode];
 		});
-
-		engine.setCanvasDimentions();
+		
+		//for resizing canvas
+		//engine.setCanvasDimentions();
 
 		engine.loop();
+
+		// doesnt draw?!?!
+		// if put in loop function it lags the game
+		for (var i = 0; i < engine.gui.length; i++) {
+			engine.gui[i].draw();
+		};		
 	};
 
 	engine.loop = function()
@@ -103,28 +109,33 @@ Purpl = function(canvas, width, height)
 		// render engine
 		engine.render();
 		// request next frame
+
 		window.requestAnimationFrame(engine.loop);
+
+
 	}
 
 	engine.update = function(dt)
 	{
-		//for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[0].update(dt, engine.keysDown	);
-		//};
+		engine.actor.update(dt, engine.keysDown);
+
+		for (var i = 0; i < engine.entities.length; i++) {
+			engine.entities[i].update(dt);
+		};
 	}
 
 	engine.render = function()
 	{
-		engine.context.clearRect(0,0, engine.width, canvas.height);
+		engine.context.clearRect(0,0, engine.width, engine.height);
 
-		for (var i = 0; i < engine.world.length; i++) {
-			engine.world[i].draw();
-		};
-
+		engine.world.draw();
+		
 		for (var i = 0; i < engine.entities.length; i++) {
 			engine.entities[i].draw(engine.context);
-
 		};
+		
+		engine.actor.entity.draw(engine.context);
+		
 	}
 	//set canvas propperties
 	engine.setCanvas = function(canvas, cString)

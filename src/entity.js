@@ -2,206 +2,225 @@ Entity = function(options)
 {	
 	var entity = this;
 
-	this.map = options.map;
+	entity.map = options.map;
 
-	this.x = options.x; 
-	this.y = options.y;
-	this.width = options.width;
-	this.height = options.height;
+	entity.x = options.x; 
+	entity.y = options.y;
+	entity.width = options.width;
+	entity.height = options.height;
 
-	//this is calculatinge now in update function
+	//entity is calculatinge now in update function
 	//we should maybe calculate it from some were else
 	//or we need t use Vector2 function
-	this.velocityX = 0;
-	this.velocityY = 0;
+	entity.velocityX = 0;
+	entity.velocityY = 0;
 
-	this.direction = options.direction || 'right';
+	entity.direction = options.direction || 'right';
 
-	//this is first speed
+	//entity is first speed
 	//it eventualy will calculate itself from stats
-	//this.speed = speed || 25;
+	//entity.speed = speed || 25;
 
-	//this could be CONSTANT or we calcuate it and put it in pysic
-	this.friction = 0.01;
+	//entity could be CONSTANT or we calcuate it and put it in pysic
+	entity.friction = 0.01;
 	//we should calculate it from actor stats
-	this.acceleration = 0.0018;
+	entity.acceleration = 0.0018;
 
-	this.force = 0.2; //jump acceleration for now
+	entity.force = 0.2; //jump acceleration for now
 
-	//put this in world class and return it here or in specific class, or in pysics engine
+	//put entity in world class and return it here or in specific class, or in pysics engine
 	//witch works with world class and world class works with actor/entity class
-	this.tempGravity = 0.01;
+	entity.tempGravity = 0.01;
 
-	this.jumping = false;
-	this.falling = false;
-	this.canMove = false;
+	entity.jumping = false;
+	entity.falling = false;
+	entity.canMove = false;
+	entity.moving = false;
 
-	this.sprite;
-	//this. spriteObj;
-	//this.sprite = new Sprite(sprite,[1,2,3], 3, this.x, this.y, this.width, this.height);
+	entity.sprite;
+	
 	entity.draw = function(context, color) 
-	{
-		if(this.direction == 'left')
+	{	
+		//for debuging
+		//context.fillStyle = color || "green";
+		//context.fillRect(entity.x, entity.y , entity.width, entity.height);
+		if(entity.moving)
 		{
-			context.save();
-			//context.translate(this.width/2, this.height/2);
-			context.scale(-1,1);
-			//context.fillStyle = color || "green";
-			//context.fillRect(this.x, this.y , this.width, this.height);
-			this.sprite.draw(context, -this.x - this.width, this.y, this.width, this.height);
-			context.restore();
+			if(entity.direction == 'left')
+			{
+				context.save();
+				context.scale(-1,1);
+				entity.sprite.drawAnimated(context, -entity.x - entity.width, entity.y, entity.width, entity.height);
+				context.restore();
+			}
+			if( entity.direction == 'right')
+			{
+				context.save();
+				entity.sprite.drawAnimated(context, entity.x, entity.y, entity.width, entity.height);
+				context.restore();
+			}
 		}
-		if( this.direction == 'right')
+		else
 		{
-			context.save();
-			//context.translate(this.width/2, this.height/2);
-			//context.fillStyle = color || "green";
-			//context.fillRect(this.x, this.y , this.width, this.height);
-			this.sprite.draw(context, this.x, this.y, this.width, this.height);
-			context.restore();
-		}
-		
-	};
-	entity.update = function(dt, keysDown)
-	{
-		this.move(dt, keysDown);
-		this.collision();
-	};
-
-
-	//Should make it more generic
-	//BUT HOW?
-	entity.move = function(dt, keysDown)
-	{
-		//Jump
-		if (32 in keysDown && !this.jumping && !this.falling)
-		{
-			this.Jump();
+			entity.sprite.draw(context, entity.x, entity.y, entity.width, entity.height);
 		}
 		
-		//left
-		if (65 in keysDown)
-		{
-			this.velocityX -= this.acceleration * dt;
-			
-			this.direction = 'left';
-			this.sprite.update();
-		}
-
-		//right
-		if(68 in keysDown)
-		{
-			this.velocityX += this.acceleration * dt;
-			this.direction = 'right';
-			this.sprite.update();
-		}
-		//console.log(this.direction);
-		//Friction for smooth slowing down
-		this.velocityX -= this.velocityX * this.friction * dt;
-
-		//Update entity position from input
-		this.y += this.velocityY * dt;
-		this.x += this.velocityX  * dt;
-
-		//console.log(this.x);
-
 	};
+	entity.update = function(dt)
+	{	
+		entity.y += entity.velocityY * dt;
+		entity.x += entity.velocityX  * dt;
+		entity.collision();
+	};
+
 	//working tilebased collision with gravity
 	//have bugs:
 	// #diognal collision
 	entity.collision = function()
 	{
 		//COLLISION
+				//Gravity check
+		entity.Fall();
 
-
-		var tileLeft 	= pixelToTileCord(this.x, 32);
-		var tileTop 	= pixelToTileCord(this.y, 32);
+		var tileLeft 	= pixelToTileCord(entity.x, 32);
+		var tileTop 	= pixelToTileCord(entity.y, 32);
 
 		/*
-		var block 		= this.tileCollide(this.x, this.y);
-		var right 		= this.tileCollide(this.x + this.width, this.y);
-		var down 		= this.tileCollide(this.x, this.y + this.height);
-		var diag 		= this.tileCollide(this.x + this.width, this.y + this.height);
+		var block 		= entity.tileCollide(entity.x, entity.y);
+		var right 		= entity.tileCollide(entity.x + entity.width, entity.y);
+		var down 		= entity.tileCollide(entity.x, entity.y + entity.height);
+		var diag 		= entity.tileCollide(entity.x + entity.width, entity.y + entity.height);
 		*/
 
-		var block 		= this.tileCollide(tileLeft, tileTop);
-		var right 		= this.tileCollide(tileLeft + 1, tileTop);
-		var down 		= this.tileCollide(tileLeft, tileTop + 1);
-		var diag 		= this.tileCollide(tileLeft + 1, tileTop + 1);
-
-		var overlapX 	= this.x % 32;
-		var overlapY 	= this.y % 32;
-
-
-		//Gravity check
-		this.Fall();
-
+		var block 		= entity.tileCollide(tileLeft, tileTop);
+		var right 		= entity.tileCollide(tileLeft + 1, tileTop);
+		var down 		= entity.tileCollide(tileLeft, tileTop + 1);
+		var diag 		= entity.tileCollide(tileLeft + 1, tileTop + 1);
+		var overlapX 	= entity.x % 32;
+		var overlapY 	= entity.y % 32;
+	
 		// Ceiling
-		if(this.velocityY < 0){
+		if(entity.velocityY < 0){
 			if ((block && !down) || (right && !diag && overlapX))
 			{
-				this.y 	= tileToPixelCord(tileTop + 1, 32);
-				this.velocityY 	= 0;
+				entity.y 	= tileToPixelCord(tileTop + 1, 32);
+				entity.velocityY 	= 0;
 				block 		= down;
 				right 		= diag;
 				overlapY 	= 0;
 			}
 		}
-
-		//ground
-		if (this.velocityY > 0){
-			if((down && !block) || (diag && !right && overlapX))
-			{
-				this.y = tileToPixelCord(tileTop, 32);
-				this.velocityY = 0;
-				this.falling = false;
-				this.jumping = false;
-				overlapY = 0;
+			//ground
+			if (entity.velocityY > 0){
+				if((down && !block) || (diag && !right && overlapX))
+				{
+					entity.y = tileToPixelCord(tileTop, 32);
+					entity.velocityY = 0;
+					entity.falling = false;
+					entity.jumping = false;
+					overlapY = 0;
+				}
 			}
-		}
-
-		//Left
-		if(this.velocityX < 0){
-			if ((block && !right) || ( down && !diag && overlapY))
-			{
-				this.x = tileToPixelCord(tileLeft +1, 32);
-				this.velocityX = 0;
+			//Left
+			if(entity.velocityX < 0){
+				if ((block && !right) || ( down && !diag && overlapY))
+				{
+					entity.x = tileToPixelCord(tileLeft +1, 32);
+					entity.velocityX = 0;
+				}
 			}
-		}
-
-		// Right
-		if(this.velocityX > 0){
-			if ((right && !block) || ( !down && diag && overlapY))
-			{
-				this.x = tileToPixelCord(tileLeft , 32);
-				this.velocityX = 0;
+			// Right
+			if(entity.velocityX > 0){
+				if ((right && !block) || ( !down && diag && overlapY))
+				{
+					entity.x = tileToPixelCord(tileLeft , 32);
+					entity.velocityX = 0;
+				}
 			}
-		}
+		
 	};
 
 	entity.tileCollide = function(cordX, cordY)
 	{
-		//this.map.tilewidth - we should change this
+		//entity.map.tilewidth - we should change entity
 		// to some global variable from main game class maybe
-		if( (cordX >= 0) && (cordX <= this.map.tileWidth) &&
-			(cordY >= 0) && (cordY <= this.map.tileHeight))
+		if( (cordX >= 0) && (cordX <= entity.map.tileWidth) &&
+			(cordY >= 0) && (cordY <= entity.map.tileHeight))
 		{	
-			t = this.map.getMap(cordX , cordY ); 
- 			this.canMove = !(t == 0);
+			t = entity.map.getMapTileId(cordX , cordY ); 
+ 			entity.canMove = !(t == 0);
 		}
-		return this.canMove;
+		return entity.canMove;
 	};
 
 	entity.Jump = function()
 	{
-		this.velocityY  -= this.force;
-		this.jumping = true;
+		entity.velocityY  -= entity.force;
+		entity.jumping = true;
 	};
 
 	entity.Fall = function()
 	{
-		this.velocityY += this.tempGravity;
-		this.falling = true;
+		entity.velocityY += entity.tempGravity;
+		entity.falling = true;
+
 	};
 
 }
+
+Actor = function(options){
+
+	var actor = this;
+		actor.entity;
+		actor.stats = {
+			health : 10, 
+			agility : 10,
+			power : 10,
+		};
+		actor.race = options.race;
+
+		actor.update = function(dt, keysDown)
+		{
+			actor.entity.y += actor.entity.velocityY * dt;
+			actor.entity.x += actor.entity.velocityX  * dt;
+			actor.move(dt, keysDown);
+			actor.entity.collision();
+		};
+		//Should make it more generic
+		//BUT HOW?
+		actor.move = function(dt, keysDown)
+		{
+		//Jump
+		if (32 in keysDown && !actor.entity.jumping && !actor.entity.falling)
+		{
+			actor.entity.Jump();
+			actor.entity.moving = true;
+		}
+		
+		//left
+		if (65 in keysDown)
+		{
+			actor.entity.velocityX -= actor.entity.acceleration * dt;
+			actor.entity.direction = 'left';
+			actor.entity.moving = true;
+			actor.entity.sprite.update();
+		}
+
+		//right
+		if(68 in keysDown)
+		{
+			actor.entity.velocityX += actor.entity.acceleration * dt;
+			actor.entity.direction = 'right';
+			actor.entity.moving = true;
+			actor.entity.sprite.update();
+		}
+		//console.log(entity.direction);
+		//Friction for smooth slowing down
+		actor.entity.velocityX -= actor.entity.velocityX * actor.entity.friction * dt;
+ 
+		//console.log(entity.x);
+
+	};
+
+}
+

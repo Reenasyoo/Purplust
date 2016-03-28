@@ -22,10 +22,11 @@ GUI = function(context, label, x ,y, width, height, lenght)
 
 
 GUI.prototype.bar = function(label, x ,y, width, height, lenght) {
-
+	//width should make it full lenght not block
+	//then we can calculate bloks from max lenght
 	var maxLenght = 10;
 	this.text(label,x, y);
-	this.context.save();
+	//this.context.save();
 	//border of bar
 	// need able to change color
 	this.context.fillStyle = "white";
@@ -35,20 +36,20 @@ GUI.prototype.bar = function(label, x ,y, width, height, lenght) {
 	//progress bar
 	this.context.fillStyle = "red";
 	this.context.fillRect(x, y , width * lenght , height);
-	this.context.restore();
+	//this.context.restore();
 
 }
 
 GUI.prototype.text = function(label, x, y)
 {
-	this.context.save();
+	//this.context.save();
 	// need able to change color
 	// and font and size
 	// and position
 	this.context.font = '20px Arial';
 	this.context.fillStyle = "black";
 	this.context.fillText(label, x , y - 5 /* , maxTextWidth */);
-	this.context.restore();
+	//this.context.restore();
 }
 
 

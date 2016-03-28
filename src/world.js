@@ -2,7 +2,7 @@
 var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A' },
     COLORS = [ COLOR.PINK, COLOR.YELLOW, COLOR.BRICK, COLOR.BLACK, COLOR.PURPLE, COLOR.GREY ];
    
-	Map = function(mapData, context, sprite /*, width, height */){
+	Map = function(mapData, context, sprite , width, height ){
 
 		//this.width = width;
 		//this.height = height;
@@ -17,7 +17,7 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 		//this.tilesize = null;
 		//this.tileset = tileset || console.log("tileset hasn't been set");
 
-		this.tileset = false;
+		this.tileset = true;
 		this.context = context;
 		this.sprite = sprite;
 		
@@ -52,7 +52,7 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
                	var tileHeight = this.tileSize;
 				var tile = this.getMapTileId(r,c); //maybe some predef function after goten r/x c/y cords (in tiles)
 
-				tempTile = new Tile(r, c, tileWidth, tileHeight, context);
+				tempTile = new Tile(r, c, 32, 32, context);
 				tempTile.drawTile(tile, this.sprite);
 			}
 		}
@@ -66,15 +66,14 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
                	var tile = this.getMapTileId(c,r);
                	var tileWidth = this.tileSize;
                	var tileHeight = this.tileSize;
-          		tempTile = new Tile(c , r, tileWidth, tileHeight, context);
+          		tempTile = new Tile(c , r, 32, 32, context);
           		tempTile.setColor(COLORS[tile]);
           		tempTile.setTile();
             }
         }
     }
 
-Tile = function(left, top, width, height, context, tileId){
-		this.tileId= tileId;
+Tile = function(left, top, width, height, context){
 		this.tileData = new Rectangle (left, top, width, height);
 		this.colorData = 0;
 		this.context = context;
@@ -96,7 +95,6 @@ Tile = function(left, top, width, height, context, tileId){
 	{
 		var destinationX = this.tileData.left;
 		var destinationY = this.tileData.top;
-
 		this.context.fillRect(destinationX, destinationY, this.tileData.width, this.tileData.height);
 	}
 

@@ -40,7 +40,11 @@ Purpl = function(canvas, width, height)
 
 	engine.keysDown = [];
 
-	engine.time = false;
+	engine.time = new Date().getTime();
+	// should make timer class
+	// but first simple things
+	engine.fps = 30;
+	engine.interval = 1000/ engine.fps;
 
 	engine.entities = [];
 	engine.resources = [];
@@ -90,26 +94,27 @@ Purpl = function(canvas, width, height)
 
 		engine.loop();
 
-		// doesnt draw?!?!
-		// if put in loop function it lags the game
-		for (var i = 0; i < engine.gui.length; i++) {
-			engine.gui[i].draw();
-		};		
 	};
 
 	engine.loop = function()
 	{
 		// timing
         var now = new Date().getTime();
-        var deltaTime = now - (game.time || now);
-        engine.time = now;
+        var deltaTime = now - (engine.time || now);
+        
+        //if(deltaTime > engine.fps)
+       // {
+        	engine.time = now;
+      //  }
+        
 
         // update engine
 		engine.update(deltaTime);
 		// render engine
 		engine.render();
-		// request next frame
 
+
+		// request next frame
 		window.requestAnimationFrame(engine.loop);
 
 
@@ -135,6 +140,12 @@ Purpl = function(canvas, width, height)
 		};
 		
 		engine.actor.entity.draw(engine.context);
+
+		// doesnt draw?!?!
+		// if put in loop function it freezes the game
+		for (var i = 0; i < engine.gui.length; i++) {
+			engine.gui[i].draw();
+		 };
 		
 	}
 	//set canvas propperties

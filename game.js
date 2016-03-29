@@ -68,9 +68,9 @@ p.entity.sprite = new Sprite({
 
 console.log(p.stats.health);
 game.actor = p;
-var health = new GUI(game.context,"Health", 20, game.height - 40, 40, 20, 5);
 
-var spec = new GUI(game.context,"Special", game.width - 420, game.height - 40, 40, 20, 6);
+var health = new GUI("Health", 20, game.height - 40, 40, 20, 5);
+var spec = new GUI("Special", game.width - 420, game.height - 40, 40, 20, 6);
 
 game.gui.push(health, spec);
 

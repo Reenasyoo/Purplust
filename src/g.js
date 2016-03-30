@@ -143,9 +143,10 @@ Purpl = function(canvas, width, height)
 
 		// doesnt draw?!?!
 		// if put in loop function it freezes the game
-		for (var i = 0; i < engine.gui.length; i++) {
+		for (var i = 0; i < engine.gui.length - 1; i++) {
 			engine.gui[i].draw(engine.context);
 		};
+		engine.gui[2].optionBar(engine.context)
 		
 	}
 	//set canvas propperties

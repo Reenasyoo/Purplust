@@ -93,9 +93,7 @@ Tile = function(left, top, width, height, context){
 
 	Tile.prototype.setTile = function()
 	{
-		var destinationX = this.tileData.left;
-		var destinationY = this.tileData.top;
-		this.context.fillRect(destinationX, destinationY, this.tileData.width, this.tileData.height);
+		
 	}
 
 	Tile.prototype.setColor = function(colorData)

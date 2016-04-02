@@ -44,6 +44,7 @@ Entity = function(options)
 		//for debuging
 		//context.fillStyle = color || "green";
 		//context.fillRect(entity.x, entity.y , entity.width, entity.height);
+		
 		if(entity.moving)
 		{
 			if(entity.direction == 'left')

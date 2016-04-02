@@ -88,6 +88,10 @@ Purpl = function(canvas, width, height)
 		window.addEventListener('keyup', function(e) {
     	delete engine.keysDown[e.keyCode];
 		});
+
+
+		//MOUSE
+		
 		
 		//for resizing canvas
 		//engine.setCanvasDimentions();
@@ -146,7 +150,8 @@ Purpl = function(canvas, width, height)
 		for (var i = 0; i < engine.gui.length - 1; i++) {
 			engine.gui[i].draw(engine.context);
 		};
-		engine.gui[2].optionBar(engine.context)
+		engine.gui[2].Menu(engine.context);
+		//console.log(engine.gui[2]);
 		
 	}
 	//set canvas propperties

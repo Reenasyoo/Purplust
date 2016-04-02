@@ -71,9 +71,10 @@ game.actor = p;
 
 var health = new GUI("Health", 20, game.height - 40, 40, 20, p.stats.health);
 var spec = new GUI("Special", game.width - 420, game.height - 40, 40, 20, 6);
-
 var menu = new GUI("menu", canvas.width - 64, canvas.height /2 , 64, 192);
+
 game.gui.push(health, spec, menu);
+//health.draw(game.context);
 
 game.Run();
 

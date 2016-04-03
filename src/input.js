@@ -21,8 +21,12 @@ var canInput = false;
 
 window.addEventListener('keydown', function(e) {
     keysDown[e.keyCode] = true;
-    //console.log("true");
+    //console.log(e.keycode + "true");
 });
 window.addEventListener('keyup', function(e) {
+	if(e.keyCode == 73)
+	{
+				engine.inv = !engine.inv;
+	}
     delete keysDown[e.keyCode];
 });

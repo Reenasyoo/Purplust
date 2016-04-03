@@ -11,6 +11,8 @@ GUI = function(label, x ,y, width, height, lenght)
 		// for drawing bar's
 		gui.currentLenght = lenght;
 
+		gui.visible = false;
+
 	//should change this
 	// maybe by type???
 	//
@@ -32,7 +34,20 @@ GUI = function(label, x ,y, width, height, lenght)
 		context.restore();
 	};
 
-	gui.Menu = function(context)
+	// BUGG!
+	//flickering kinda now and not allways turning off
+	gui.update = function(keysDown, inv)
+	{	
+		// inventory I 
+		if(inv)
+		{
+			gui.visible = !gui.visible; 
+		}
+
+		
+	}
+
+	gui.Menu = function(context, inv)
 	{
 		//what else we need
 		//offset for items
@@ -78,7 +93,10 @@ GUI = function(label, x ,y, width, height, lenght)
 			context.restore();
 		
 
-		gui.Inventory(context);
+
+		if(inv){
+			gui.Inventory(context);
+		}
 		//gui.Stats(context);
 
 	};
@@ -209,13 +227,37 @@ GUI = function(label, x ,y, width, height, lenght)
 	};
 
 }
-
-
-
-
-
-
 /*
+FOR BUTTON HOVER AND CLICKED EFFECT
+/ click
+
+game.canvas.addEventListener('click', game.click, false);
+
+    game.click = function(e){
+        
+        // get click coordinates
+        var x = e.offsetX - Math.floor(game.width / 2) + game.view.x;
+        var y = e.offsetY - Math.floor(game.height / 2) + game.view.y;
+        
+        // map entities
+        for(var i = 0; i < game.map.length; i++){
+            if(x >= game.map[i].settings.x - (game.map[i].settings.w / 2) && x <= game.map[i].settings.x + (game.map[i].settings.w / 2) && y >= game.map[i].settings.y - (game.map[i].settings.h / 2) && y <= game.map[i].settings.y + (game.map[i].settings.h / 2)){
+                if(game.map[i].settings.selected){
+                    game.map[i].settings.selected = false;
+                }
+                else{
+                    game.map[i].settings.selected = true;
+                }
+            }
+            else{
+                game.map[i].settings.selected = false;
+            }
+        }
+        
+    };
+
+
+////////
 context.save();
 context.beginPath();
 context.rect(x, y, width * maxLenght, height);

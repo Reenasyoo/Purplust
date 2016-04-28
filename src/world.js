@@ -36,14 +36,9 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 
     Map.prototype.getMapTileId = function(x , y){
 
-    	return this.map.mapArray[x + (y * this.tileWidth)];
+    	var tileId = this.map.mapArray[x + (y * this.tileWidth)];
+    	return tileId;
     }
-
-    Map.prototype.getCollisionMap = function(x , y){
-    	
-    	return this.map.mapArray[x + (y * this.tileWidth)];
-    }
-
     Map.prototype.drawFromTileset = function(context)
     {
 		for(var r = 0; r < this.tileWidth; r++){
@@ -85,7 +80,6 @@ Tile = function(left, top, width, height, context){
 		// should make it optional
 		this.tilePerRow = 5;
 		this.tilePercol = 5;
-		this.tileset = false;
 		//should make it optional
 		this.tileSize = 32;
 
@@ -93,7 +87,7 @@ Tile = function(left, top, width, height, context){
 
 	Tile.prototype.setTile = function()
 	{
-		
+		this.context.rect(this.tileData.left, this.tileData.top, this.tileData.width, this.tileData.height);
 	}
 
 	Tile.prototype.setColor = function(colorData)

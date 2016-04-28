@@ -34,3 +34,11 @@ function merge(obj1, obj2){
     for(var attrname in obj2){ obj3[attrname] = obj2[attrname]; }
     return obj3;
 }
+
+function intersects(o1, o2){
+    if ((o1.x < o2.x + o2.width) && (o1.x + o1.width > o2.x)
+        && (o1.y < o2.y + o2.height) && (o1.y + o1.height > o2.y))
+    {
+        return(true);
+    }
+}

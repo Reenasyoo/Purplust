@@ -16,6 +16,9 @@ GUI = function(label, x ,y, width, height, lenght)
 	//should change this
 	// maybe by type???
 	//
+	// dont need this.
+	// draw method should be in every constructor
+	// but update comes from parent obj
 	gui.draw = function(context)
 	{
 		gui.bar(context, gui.label, gui.x, gui.y, gui.width, gui.height, gui.currentLenght);
@@ -36,69 +39,92 @@ GUI = function(label, x ,y, width, height, lenght)
 
 	// BUGG!
 	//flickering kinda now and not allways turning off
-	gui.update = function(keysDown, inv)
-	{	
+	// should be function( input ) input.keyboard, input.mouse, input.touch ..
+	gui.update = function(inv, mouse)
+	{	//here works
+		// hover, cliked selected blah balh.
 		// inventory I 
 		if(inv)
 		{
 			gui.visible = !gui.visible; 
 		}
 
+		if(intersects(mouse, gui))
+			{	
+				this.hovered = true;
+				if(mouse.cliked){
+					this.clicked = true;
+				}
+			}
+			else 
+			{ 
+				this.hovered = false;
+			}
+			if(!mouse.down){
+				this.clicked = false;
+			}
+
 		
 	}
-
-	gui.Menu = function(context, inv)
+	// should make it an object
+	gui.Menu = function(context, inv, hover)
 	{
 		//what else we need
 		//offset for items
+		var menu = this;
+		menu.inv = inv;
+		menu.hover = hover;
 		var offsetX = 5;
 		var offsetY = 5;
 		var size = 64
 		var items = [3,2,3];
-		//draw menu background
-		context.save();
-		context.translate(0, -gui.height/2);
-		//here could be bacground image
-		context.fillStyle = "black";
-		context.fillRect(gui.x, gui.y, gui.width + offsetX, gui.height + offsetY);
-		//context.stroke();
-		
-			//draw items
-			//each item should be a button!!!!! 
+
+		menu.draw(context);
+
+		menu.draw = function(context, mouse){
+			//draw menu background
 			context.save();
-			for (var i = 0; i < items.length; i++) {
-				var iSize = gui.y + (i  * size);
-				//here too should be some image
-				//context.fillStyle = "red";
-				//context.fillRect(gui.x + offsetX, iSize + offsetY , size - offsetX, size - offsetY);
+			context.translate(0, -gui.height/2);
+			//here could be bacground image
+			context.fillStyle = "black";
+			context.fillRect(gui.x, gui.y, gui.width + offsetX, gui.height + offsetY);
+			//context.stroke();
+			
+				//draw items
+				//each item should be a button!!!!! 
+				context.save();
+				for (var i = 0; i < items.length; i++) {
+					var iSize = gui.y + (i  * size);
+					//here too should be some image
+					//context.fillStyle = "red";
+					//context.fillRect(gui.x + offsetX, iSize + offsetY , size - offsetX, size - offsetY);
 
-				var tempButton = new gui.Button({
-					x: gui.x,
-					y: iSize,
+					var tempButton = new gui.Button({
+						x: gui.x,
+						y: iSize,
 
-					width: size,
-					height: size,
+						width: size,
+						height: size,
 
-					offset_x: offsetX,
-					offset_y: offsetY,
+						offset_x: offsetX,
+						offset_y: offsetY,
 
-					context : context,
-				})
-				tempButton.draw();
+						context : context,
+					})
+					tempButton.draw(menu.hover);
 
-			};
+				};
 
-			context.restore();	
-		
-			context.restore();
-		
+				context.restore();	
+			
+				context.restore();
 
-
-		if(inv){
-			gui.Inventory(context);
+				if(menu.inv){
+					gui.Inventory(context);
+				}
+				//gui.Stats(context);
 		}
-		//gui.Stats(context);
-
+		
 	};
 
 	gui.Button = function(options)
@@ -120,15 +146,24 @@ GUI = function(label, x ,y, width, height, lenght)
 
 		button.context = options.context;
 
+		//button.hover = false;
+
 		//button.draw(button.context);
 
 
-		button.draw = function(context)
+		button.draw = function(hover)
 		{
 			//context.drawImage(button.image, button.x, button.y, button.width , button.height);
 			//if image is not set
-			button.context.fillStyle = button.color;
-			button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
+			if(hover){
+				button.context.fillStyle = "brown";
+				button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
+			}
+			else{
+				button.context.fillStyle = button.color;
+				button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
+			}
+
 		};
 	};
 	gui.Inventory = function(context)
@@ -227,6 +262,10 @@ GUI = function(label, x ,y, width, height, lenght)
 	};
 
 }
+
+
+
+
 /*
 FOR BUTTON HOVER AND CLICKED EFFECT
 / click

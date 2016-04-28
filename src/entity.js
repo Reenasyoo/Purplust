@@ -1,3 +1,39 @@
+			function drawRotatedRect(ctx, x, y, width, height, degrees) {
+
+			    // first save the untranslated/unrotated context
+			    ctx.save();
+
+			    ctx.beginPath();
+			    // move the rotation point to the center of the rect
+			    ctx.translate(x + width/2, y+ height/2);
+			    // rotate the rect
+			    ctx.rotate(degrees * Math.PI / 180);
+
+			    // draw the rect on the transformed context
+			    // Note: after transforming [0,0] is visually [x,y]
+			    //       so the rect needs to be offset accordingly when drawn
+			    ctx.rect(0, -height, width, height);
+
+			    ctx.fillStyle = "gold";
+			    ctx.fill();
+
+			    // restore the context to its untranslated/unrotated state
+			    ctx.restore();
+
+			}
+function lineToAngle(ctx, x1, y1, length, angle) {
+
+    angle *= Math.PI / 180;
+    
+    var x2 = x1 + length * Math.cos(angle),
+        y2 = y1 + length * Math.sin(angle);
+    
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+
+    return {x: x2, y: y2};
+}
+
 Entity = function(options)
 {	
 	var entity = this;
@@ -173,55 +209,102 @@ Actor = function(options){
 
 	var actor = this;
 		actor.entity;
+		//actor = actor.entity;
+		actor.characterName = options.characterName;
 		actor.stats = {
 			health : 10, 
 			agility : 10,
 			power : 10,
 		};
 		actor.race = options.race;
+		actor.clas = options.clas;
+		actor.level = 69;
+		actor.profession = "Woodcutter";
 
-		actor.update = function(dt, keysDown)
+		actor.backpack = false;
+		actor.wepon = false;
+
+		
+		//actor.atack
+
+		actor.update = function(dt, keyboard, input)
 		{
+			actor.wepon = {
+				x : actor.entity.x + 5,
+				y : actor.entity.y + 25,
+				width : 30,
+				height : 4,
+				degrees : -20,
+			}
 			actor.entity.y += actor.entity.velocityY * dt;
 			actor.entity.x += actor.entity.velocityX  * dt;
-			actor.move(dt, keysDown);
+			actor.move(dt, keyboard);
 			actor.entity.collision();
+			if(input.attack){
+				actor.attack(actor.wepon);
+				console.log("F");	
+			}
+
+			
+			
 		};
+		actor.draw = function(context)
+		{	
+
+			drawRotatedRect(context, actor.wepon.x, actor.wepon.y, actor.wepon.width, actor.wepon.height, actor.wepon.degrees);
+			//context.fillStyle = "red";
+			//context.fillRect(, actor.wepon.y,actor.wepon.width, actor.wepon.height);
+
+
+		}
 		//Should make it more generic
 		//BUT HOW?
 		actor.move = function(dt, keysDown)
 		{
-		//Jump
-		if (32 in keysDown && !actor.entity.jumping && !actor.entity.falling)
-		{
-			actor.entity.Jump();
-			actor.entity.moving = true;
-		}
-		
-		//left
-		if (65 in keysDown)
-		{
-			actor.entity.velocityX -= actor.entity.acceleration * dt;
-			actor.entity.direction = 'left';
-			actor.entity.moving = true;
-			actor.entity.sprite.update();
-		}
+			//Jump
+			if (32 in keysDown && !actor.entity.jumping && !actor.entity.falling)
+			{
+				actor.entity.Jump();
+				actor.entity.moving = true;
+			}
+			
+			//left
+			if (65 in keysDown)
+			{
+				actor.entity.velocityX -= actor.entity.acceleration * dt;
+				actor.entity.direction = 'left';
+				actor.entity.moving = true;
+				actor.entity.sprite.update();
+			}
 
-		//right
-		if(68 in keysDown)
-		{
-			actor.entity.velocityX += actor.entity.acceleration * dt;
-			actor.entity.direction = 'right';
-			actor.entity.moving = true;
-			actor.entity.sprite.update();
-		}
-		//console.log(entity.direction);
-		//Friction for smooth slowing down
-		actor.entity.velocityX -= actor.entity.velocityX * actor.entity.friction * dt;
- 
-		//console.log(entity.x);
+			//right
+			if(68 in keysDown)
+			{
+				actor.entity.velocityX += actor.entity.acceleration * dt;
+				actor.entity.direction = 'right';
+				actor.entity.moving = true;
+				actor.entity.sprite.update();
+			}
+			//console.log(entity.direction);
+			//Friction for smooth slowing down
+			actor.entity.velocityX -= actor.entity.velocityX * actor.entity.friction * dt;
+	 
+			//console.log(entity.x);
 
-	};
+		};
+		actor.attack = function(wepon){
+			
+			
+			wepon.degrees = wepon.degrees + 30;
+		}
 
 }
+/*
+			ctx.beginPath();
+    		lineToAngle(ctx, x, y, length, angle);
+    		ctx.lineWidth = 10;
+    		ctx.stroke();
 
+		    angle += dlt;
+		    if (angle < -90 || angle > 0) dlt = -dlt;
+*/

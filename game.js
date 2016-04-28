@@ -66,7 +66,7 @@ p.entity.sprite = new Sprite({
             ticksPerFrame : 3,
 });
 
-console.log(p.stats.health);
+
 game.actor = p;
 
 var health = new GUI("Health", 20, game.height - 40, 40, 20, p.stats.health);
@@ -76,5 +76,6 @@ var menu = new GUI("menu", canvas.width - 64, canvas.height /2 , 64, 192);
 game.gui.push(health, spec, menu);
 //health.draw(game.context);
 
+//console.log(menu.Menu);
 game.Run();
-
+console.log(p.stats.health);

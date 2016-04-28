@@ -232,31 +232,45 @@ Actor = function(options){
 			actor.wepon = {
 				x : actor.entity.x + 5,
 				y : actor.entity.y + 25,
-				width : 30,
+				width : 25,
 				height : 4,
 				degrees : -20,
 			}
+			
 			actor.entity.y += actor.entity.velocityY * dt;
 			actor.entity.x += actor.entity.velocityX  * dt;
+			
 			actor.move(dt, keyboard);
 			actor.entity.collision();
+
 			if(input.attack){
 				actor.attack(actor.wepon);
 				console.log("F");	
 			}
-
-			
-			
 		};
+
 		actor.draw = function(context)
 		{	
+			if(actor.entity.direction == 'left')
+			{
+				context.save();
+				context.scale(-1,1);
+				drawRotatedRect(context, -actor.wepon.x - actor.wepon.width , actor.wepon.y, actor.wepon.width, actor.wepon.height, actor.wepon.degrees);
+				context.restore();
+			}
+			if(actor.entity.direction == 'right')
+			{
+				context.save();
+				drawRotatedRect(context, actor.wepon.x, actor.wepon.y, actor.wepon.width, actor.wepon.height, actor.wepon.degrees);		
+				context.restore();
+			}
 
-			drawRotatedRect(context, actor.wepon.x, actor.wepon.y, actor.wepon.width, actor.wepon.height, actor.wepon.degrees);
+			
 			//context.fillStyle = "red";
 			//context.fillRect(, actor.wepon.y,actor.wepon.width, actor.wepon.height);
 
 
-		}
+		};
 		//Should make it more generic
 		//BUT HOW?
 		actor.move = function(dt, keysDown)
@@ -296,7 +310,7 @@ Actor = function(options){
 			
 			
 			wepon.degrees = wepon.degrees + 30;
-		}
+		};
 
 }
 /*

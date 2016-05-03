@@ -46,15 +46,16 @@ Purpl = function(canvas, width, height)
 	engine.fps = 30;
 	engine.interval = 1000/ engine.fps;
 
+	engine.actor = false;
 	engine.entities = [];
 	engine.resources = [];
 	engine.world = false;
-	engine.actor = false;
 	engine.gui = [];
 
 	engine.mouse = {
 		x : 0,
 		y : 0,
+		down : false,
 	};
 	engine.input = {
 		attack : false,
@@ -67,7 +68,7 @@ Purpl = function(canvas, width, height)
 	engine.inv = false;
 	engine.hover = false;
 
-	
+	engine.debug = false;
 
 	engine.initializeCanvas = function()
 	{	
@@ -103,13 +104,22 @@ Purpl = function(canvas, width, height)
 				engine.input.attack = true;
 
 			}
+					var deb = "debug mode : " + engine.debug.toString();
+    				document.getElementById("debug").innerHTML = deb;
 		});
 
 		window.addEventListener('keyup', function(e) {
+			//I
 			if(e.keyCode == 73)
 			{
 				engine.inv = !engine.inv;
 			}
+			//76 - L
+			if (e.keyCode == 76) {
+				engine.debug = !engine.debug;
+				//console.log(engine.debug);
+
+			};
 			engine.input.attack = false;
 			
     		delete engine.keysDown[e.keyCode];
@@ -121,7 +131,13 @@ Purpl = function(canvas, width, height)
 			var coor = "Coordinates: (" + engine.mouse.x + "," + engine.mouse.y + ")";
     		document.getElementById("output").innerHTML = coor;
 		});
-		console.log(engine.input.attack);
+		window.addEventListener('mousedown', function(e){
+			engine.mouse.down = true;
+		});
+		window.addEventListener('mouseup', function(e){
+			engine.mouse.down = false;
+		})
+		
 		//for resizing canvas
 		//engine.setCanvasDimentions();
 
@@ -142,7 +158,7 @@ Purpl = function(canvas, width, height)
         
 
         // update engine
-		engine.update(deltaTime);
+		engine.update(deltaTime, engine.mouse);
 		// render engine
 		engine.render();
 
@@ -153,13 +169,18 @@ Purpl = function(canvas, width, height)
 
 	}
 
-	engine.update = function(deltaTime)
+	engine.update = function(deltaTime, mouse)
 	{
-		engine.actor.update(deltaTime, engine.keysDown, engine.input);
+		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities);
 		//console.log(engine.actor.x);
 
-		for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[i].update(deltaTime);
+		for (var key in engine.entities) {
+			engine.entities[key].update(deltaTime, mouse, engine.debug);
+			var isColliding = collides(engine.actor.entity, engine.entities[key]);
+				if(isColliding)
+				{
+					console.log("dead");
+				}
 		};
 
 		engine.gui[2].update(engine.keysDown, engine.mouse);

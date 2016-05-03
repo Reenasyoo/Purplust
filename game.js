@@ -33,7 +33,7 @@ game.world = m;
 
 var e = new Entity({
     x : 150,
-    y : 150,
+    y : 32,
     width : 32,
     height : 32,
     map : m,
@@ -79,3 +79,5 @@ game.gui.push(health, spec, menu);
 //console.log(menu.Menu);
 game.Run();
 console.log(p.stats.health);
+console.log(game.entities[0]);
+

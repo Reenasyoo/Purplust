@@ -49,7 +49,7 @@ GUI = function(label, x ,y, width, height, lenght)
 			gui.visible = !gui.visible; 
 		}
 
-		if(intersects(mouse, gui))
+		if(collides(mouse, gui))
 			{	
 				this.hovered = true;
 				if(mouse.cliked){
@@ -73,7 +73,6 @@ GUI = function(label, x ,y, width, height, lenght)
 		//offset for items
 		var menu = this;
 		menu.inv = inv;
-		menu.hover = hover;
 		var offsetX = 5;
 		var offsetY = 5;
 		var size = 64
@@ -111,7 +110,7 @@ GUI = function(label, x ,y, width, height, lenght)
 
 						context : context,
 					})
-					tempButton.draw(menu.hover);
+					tempButton.draw(hover);
 
 				};
 

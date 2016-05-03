@@ -21,18 +21,6 @@
 			    ctx.restore();
 
 			}
-function lineToAngle(ctx, x1, y1, length, angle) {
-
-    angle *= Math.PI / 180;
-    
-    var x2 = x1 + length * Math.cos(angle),
-        y2 = y1 + length * Math.sin(angle);
-    
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-
-    return {x: x2, y: y2};
-}
 
 Entity = function(options)
 {	
@@ -103,8 +91,13 @@ Entity = function(options)
 		}
 		
 	};
-	entity.update = function(dt)
+	entity.update = function(dt, mouse, debug)
 	{	
+		if (mouse.down && debug) {
+			entity.x = mouse.x;
+			entity.y = mouse.y;
+		};
+		
 		entity.y += entity.velocityY * dt;
 		entity.x += entity.velocityX  * dt;
 		entity.collision();
@@ -116,7 +109,7 @@ Entity = function(options)
 	entity.collision = function()
 	{
 		//COLLISION
-				//Gravity check
+		//Gravity check
 		entity.Fall();
 
 		var tileLeft 	= pixelToTileCord(entity.x, 32);
@@ -174,7 +167,9 @@ Entity = function(options)
 					entity.velocityX = 0;
 				}
 			}
-		
+
+			
+			
 	};
 
 	entity.tileCollide = function(cordX, cordY)
@@ -184,7 +179,7 @@ Entity = function(options)
 		if( (cordX >= 0) && (cordX <= entity.map.tileWidth) &&
 			(cordY >= 0) && (cordY <= entity.map.tileHeight))
 		{	
-			t = entity.map.getMapTileId(cordX , cordY ); 
+			t = entity.map.getMapTileId(cordX , cordY); 
  			entity.canMove = !(t == 0);
 		}
 		return entity.canMove;
@@ -236,15 +231,16 @@ Actor = function(options){
 				height : 4,
 				degrees : -20,
 			}
-			
+
 			actor.entity.y += actor.entity.velocityY * dt;
 			actor.entity.x += actor.entity.velocityX  * dt;
 			
 			actor.move(dt, keyboard);
 			actor.entity.collision();
-
+			 
 			if(input.attack){
 				actor.attack(actor.wepon);
+				
 				console.log("F");	
 			}
 		};
@@ -302,18 +298,28 @@ Actor = function(options){
 			//console.log(entity.direction);
 			//Friction for smooth slowing down
 			actor.entity.velocityX -= actor.entity.velocityX * actor.entity.friction * dt;
-	 
-			//console.log(entity.x);
+	
 
 		};
-		actor.attack = function(wepon){
-			
-			
+		actor.attack = function(wepon)
+		{
 			wepon.degrees = wepon.degrees + 30;
 		};
 
 }
 /*
+function lineToAngle(ctx, x1, y1, length, angle) {
+
+    angle *= Math.PI / 180;
+    
+    var x2 = x1 + length * Math.cos(angle),
+        y2 = y1 + length * Math.sin(angle);
+    
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+
+    return {x: x2, y: y2};
+}
 			ctx.beginPath();
     		lineToAngle(ctx, x, y, length, angle);
     		ctx.lineWidth = 10;

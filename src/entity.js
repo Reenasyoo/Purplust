@@ -246,7 +246,7 @@ Actor = function(options){
 					{
 				 		entities.splice(i, 1);
 	                	i--;
-	                	console.log(entities.length);
+	                	console.log("entities left: " + entities.length);
 					}
 				};
 				

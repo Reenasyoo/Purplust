@@ -85,8 +85,7 @@ GUI = function(label, x ,y, width, height, lenght)
 			context.save();
 			context.translate(0, -gui.height/2);
 			//here could be bacground image
-			context.fillStyle = "black";
-			context.fillRect(gui.x, gui.y, gui.width + offsetX, gui.height + offsetY);
+			
 			//context.stroke();
 			
 				//draw items

@@ -48,6 +48,8 @@ e.sprite = new Sprite({
 
 game.entities.push(e);
 
+
+
 var p = new Actor({
     race : "huuman",
 });
@@ -66,6 +68,22 @@ p.entity.sprite = new Sprite({
             ticksPerFrame : 3,
 });
 
+var e2 = new Entity({
+    x : 150,
+    y : 150,
+    width : 32,
+    height : 32,
+    map : m,
+});
+e2.sprite = new Sprite({
+            image : game.resources['sprite'].image,
+            width: 32,
+            height: 32,
+            numberOfFrames : 3,
+            ticksPerFrame : 6,
+});
+
+game.entities.push(e2);
 
 game.actor = p;
 

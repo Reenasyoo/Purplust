@@ -222,7 +222,7 @@ Actor = function(options){
 		
 		//actor.atack
 
-		actor.update = function(dt, keyboard, input)
+		actor.update = function(dt, keyboard, input, entities)
 		{
 			actor.wepon = {
 				x : actor.entity.x + 5,
@@ -240,13 +240,24 @@ Actor = function(options){
 			 
 			if(input.attack){
 				actor.attack(actor.wepon);
+				for (var i = 0; i < entities.length; i++) {
+					var isColliding = collides(actor.entity, entities[i]);
+					if(isColliding)
+					{
+				 		entities.splice(i, 1);
+	                	i--;
+	                	console.log(entities.length);
+					}
+				};
 				
-				console.log("F");	
+				console.log("F");
+
 			}
 		};
 
 		actor.draw = function(context)
 		{	
+			actor.entity.draw(context);
 			if(actor.entity.direction == 'left')
 			{
 				context.save();

@@ -174,13 +174,9 @@ Purpl = function(canvas, width, height)
 		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities);
 		//console.log(engine.actor.x);
 
-		for (var key in engine.entities) {
-			engine.entities[key].update(deltaTime, mouse, engine.debug);
-			var isColliding = collides(engine.actor.entity, engine.entities[key]);
-				if(isColliding)
-				{
-					console.log("dead");
-				}
+		for (var i = 0; i < engine.entities.length; i++) {
+			engine.entities[i].update(deltaTime, mouse, engine.debug);
+			
 		};
 
 		engine.gui[2].update(engine.keysDown, engine.mouse);
@@ -196,7 +192,8 @@ Purpl = function(canvas, width, height)
 			engine.entities[i].draw(engine.context);
 		};
 		
-		engine.actor.entity.draw(engine.context);
+			
+		//this is for wepon for now
 		engine.actor.draw(engine.context);
 
 		// doesnt draw?!?!

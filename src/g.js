@@ -50,18 +50,21 @@ Purpl = function(canvas, width, height)
 	engine.entities = [];
 	engine.resources = [];
 	engine.world = false;
-	engine.gui = [];
+	engine.gui = false;
 
-	engine.mouse = {
-		x : 0,
-		y : 0,
-		down : false,
-	};
+
 	engine.input = {
 		attack : false,
 		keyboard : {
 			keysDown : [],
 		},
+		mouse : {
+			x : 50,
+			y : 50,
+			width : 5,
+			height : 5,
+			down : false,
+		}
 	};
 
 	//for now
@@ -104,8 +107,6 @@ Purpl = function(canvas, width, height)
 				engine.input.attack = true;
 
 			}
-					var deb = "debug mode : " + engine.debug.toString();
-    				document.getElementById("debug").innerHTML = deb;
 		});
 
 		window.addEventListener('keyup', function(e) {
@@ -126,16 +127,16 @@ Purpl = function(canvas, width, height)
 		});
 		//MOUSE
 		window.addEventListener('mousemove', function(e){
-			engine.mouse.x = e.clientX;
-			engine.mouse.y = e.clientY;
-			var coor = "Coordinates: (" + engine.mouse.x + "," + engine.mouse.y + ")";
-    		document.getElementById("output").innerHTML = coor;
+			engine.input.mouse.x = e.clientX;
+			engine.input.mouse.y = e.clientY;
+			var coor = "Coordinates: (" + engine.input.mouse.x + "," + engine.input.mouse.y + ")";
+    		//document.getElementById("output").innerHTML = coor;
 		});
 		window.addEventListener('mousedown', function(e){
-			engine.mouse.down = true;
+			engine.input.mouse.down = true;
 		});
 		window.addEventListener('mouseup', function(e){
-			engine.mouse.down = false;
+			engine.input.mouse.down = false;
 		})
 		
 		//for resizing canvas
@@ -158,7 +159,7 @@ Purpl = function(canvas, width, height)
         
 
         // update engine
-		engine.update(deltaTime, engine.mouse);
+		engine.update(deltaTime, engine.input.mouse);
 		// render engine
 		engine.render();
 
@@ -169,17 +170,17 @@ Purpl = function(canvas, width, height)
 
 	}
 
-	engine.update = function(deltaTime, mouse)
+	engine.update = function(deltaTime, input)
 	{
 		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities);
 		//console.log(engine.actor.x);
 
 		for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[i].update(deltaTime, mouse, engine.debug);
+			engine.entities[i].update(deltaTime, engine.input, engine.debug);
 			
 		};
-
-		engine.gui[2].update(engine.keysDown, engine.mouse);
+		//need to add input
+		engine.gui.update(engine.input);
 	}
 
 	engine.render = function()
@@ -192,17 +193,10 @@ Purpl = function(canvas, width, height)
 			engine.entities[i].draw(engine.context);
 		};
 		
-			
+		engine.gui.draw();
 		//this is for wepon for now
 		engine.actor.draw(engine.context);
 
-		// doesnt draw?!?!
-		// if put in loop function it freezes the game
-		for (var i = 0; i < engine.gui.length - 1; i++) {
-			engine.gui[i].draw(engine.context);
-		};
-		engine.gui[2].Menu(engine.context, engine.inv, engine.hover);
-		//console.log(engine.gui[2]);
 		
 	}
 	//set canvas propperties

@@ -109,7 +109,16 @@ var menu = new gui.Menu({
 });
 gui.UIObjects.push(menu);
 
-
+var bar = new gui.Bar({
+    label : "Health",
+    x : 20,
+    y : game.height - 100,
+    width : 300,
+    height : 50,
+    fullLenght : 10,
+    currentLenght : 5,
+});
+gui.UIObjects.push(bar);
 /*
 var button = new gui.Button({
     x: 600,

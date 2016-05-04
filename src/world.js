@@ -45,10 +45,10 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 			for(var c = 0; c < this.tileHeight; c++){
                	var tileWidth = this.tileSize;
                	var tileHeight = this.tileSize;
-				var tile = this.getMapTileId(r,c); //maybe some predef function after goten r/x c/y cords (in tiles)
+				var tileId = this.getMapTileId(r,c); //maybe some predef function after goten r/x c/y cords (in tiles)
 
 				tempTile = new Tile(r, c, 32, 32, context);
-				tempTile.drawTile(tile, this.sprite);
+				tempTile.drawTile(tileId, this.sprite);
 			}
 		}
     }

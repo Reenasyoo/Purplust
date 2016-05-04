@@ -98,6 +98,52 @@ GUI.prototype.Button = function(options)
 			}
 		};
 }
+GUI.prototype.Bar = function(options){
+
+	var bar = this;
+		bar.x = options.x;
+		bar.y = options.y;
+		bar.width = options.width;
+		bar.height = options.height;
+		bar.label = options.label;
+		bar.fullLenght = options.fullLenght;
+		bar.currentLenght = options.currentLenght;
+		bar.color = options.color || "red";
+		bar.image = options.image;
+
+		bar.draw = function()
+		{
+			var text1 = new gui.Text({
+				x : bar.x,
+				y : bar.y - 3,
+				textSize : 20,
+				fillableText : bar.label,
+			});
+			text1.draw();
+			// need able to change color
+			gui.context.save();
+
+				gui.context.fillStyle = "black";
+				gui.context.fillRect(bar.x, bar.y , bar.width, bar.height);
+				//context.stroke();
+					
+				//progress bar
+				gui.context.save();
+
+					var width = ((bar.width / bar.fullLenght) * bar.currentLenght);
+					
+					gui.context.fillStyle = "red";
+					gui.context.fillRect(bar.x, bar.y , width , bar.height);
+
+				gui.context.restore();
+
+			gui.context.restore();
+		}
+
+		bar.update = function(input) {
+
+		}
+}
 GUI.prototype.Text = function(options)
 {
 	var	text = this;
@@ -137,6 +183,7 @@ GUI.prototype.Text = function(options)
 				this.clicked = false;
 			}
 		}
+	text.draw();
 		
 };
 
@@ -155,6 +202,7 @@ GUI.prototype.Menu = function(options) {
 		menu.itemSize = options.itemSize;
 
 		menu.inventory = false;
+
 		menu.image = options.image;
 
 
@@ -200,6 +248,8 @@ GUI.prototype.Menu = function(options) {
 					
 				
 				menu.inventory.draw();
+				//not refactored
+				//menu.Stats();
 				gui.context.restore();
 
 			gui.context.restore();
@@ -216,7 +266,7 @@ GUI.prototype.Menu = function(options) {
 				menu.inventory.update(menu.items[0].clicked);
 			};
 		}
-		//needs to be refactored to constructor
+
 		menu.Inventory = function(options)
 		{
 			//x ,y w, h, bacground color
@@ -237,33 +287,42 @@ GUI.prototype.Menu = function(options) {
 			var offsetY = 10;
 
 			//start bacground
+			inventory.setupBag = function() {
+
+				for (var i = 0; i < items.length; i++) {
+					items[i]
+				};
+			}
+
 
 			inventory.draw = function() {
 				if (this.visible) {
 
+					var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 10;
+					var itemHeight = (4 * inventory.itemSize) + (4 * 5) + 10;
 					gui.context.save();
 						gui.context.translate(0, -menu.height/2);
 						//here could be bacground image
-						gui.context.fillStyle = "#6600cc";
-						gui.context.fillRect(inventory.x, inventory.y , 400, menu.height + 15);
+						gui.context.fillStyle = "brown";
+						gui.context.fillRect(inventory.x, inventory.y , itemWidth, itemHeight);
 
 						//start inventory grid
 						gui.context.save();
-							for(var r = 0; r < 3; r++){
-								for(var c = 0; c < 6; c++){
-									var gridY =  inventory.y + (r * inventory.itemSize);
-									var gridX =  inventory.x + (c * inventory.itemSize);
+							for(var r = 0; r < 4; r++){
+								for(var c = 0; c < 4; c++){
+									var gridY =  inventory.y + (r * inventory.itemSize) + offsetX;
+									var gridX =  inventory.x + (c * inventory.itemSize) + offsetY;
 
+									// here we need just to draw items and inventory
 									gui.context.fillStyle = "red";
-									gui.context.fillRect(gridX + offsetX, gridY + offsetY , inventory.itemSize - offsetX, inventory.itemSize - offsetY);
+									gui.context.fillRect(gridX, gridY, inventory.itemSize - offsetX, inventory.itemSize - offsetY);
 									var text1 = new gui.Text({
 									    x : gridX + offsetX,
 									    y : gridY + 70,
 									    textSize : 10,
 									    fillableText : "item",
 									});
-									text1.draw();
-									
+																		
 								}
 							}
 							//restore inventory grid
@@ -286,11 +345,10 @@ GUI.prototype.Menu = function(options) {
 				
 			}
 			
-
-
 		};
 
-		menu.Stats = function(context, actor)
+		//needs to be refactored to constructor
+		menu.Stats = function()
 		{
 			var x = this.x - 400;
 			var y = this.y;
@@ -312,12 +370,32 @@ GUI.prototype.Menu = function(options) {
 
 				//start stats
 				gui.context.save();
-				/*
-				this.text(context, "Stats" , x + 3, y + 20  , 20);
-				this.text(context, "Health: " + Health, x + 5, y + 40  , 20);
-				this.text(context, "Agility: " + Agility, x + 5, y + 60  , 20);
-				this.text(context, "Strength: " + Strength, x + 5, y + 80  , 20);
-				*/
+				
+				var text1 = new gui.Text({
+					x : x + 3,
+					y : y + 20,
+					textSize : 20,
+					fillableText : "Stats" + Health,
+				});
+				var text1 = new gui.Text({
+					x : x + 5,
+					y : y + 40,
+					textSize : 20,
+					fillableText : "Health" + Health,
+				});
+				var text1 = new gui.Text({
+					x : x + 5,
+					y : y + 60,
+					textSize : 20,
+					fillableText : "Agility" + Health,
+				});
+				var text1 = new gui.Text({
+					x : x + 5,
+					y : y + 80,
+					textSize : 20,
+					fillableText : "Strength" + Health,
+				});
+			
 				gui.context.restore();
 
 			gui.context.restore();

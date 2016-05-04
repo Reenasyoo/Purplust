@@ -89,6 +89,27 @@ game.actor = p;
 
 gui = new GUI(game.context);
 
+var text1 = new gui.Text({
+    x: 100,
+    y: 150,
+    textSize : 24,
+    fillableText : "my name is blah",
+});
+gui.UIObjects.push(text1);
+
+var menu = new gui.Menu({
+    x : canvas.width - 80,
+    y : canvas.height / 2,
+    width : 64,
+    height : 192,
+    items : 2,
+    itemSize : 64,
+    offsetX : 5,
+    offsetY : 5,
+});
+gui.UIObjects.push(menu);
+
+
 /*
 var button = new gui.Button({
     x: 600,
@@ -98,6 +119,8 @@ var button = new gui.Button({
     height: 100,
 
 });
+gui.UIObjects.push(button);
+
 var button2 = new gui.Button({
     x: 400,
     y: 400,
@@ -106,25 +129,8 @@ var button2 = new gui.Button({
     height: 100,
 
 });
+gui.UIObjects.push(button2);
 */
-
-var text1 = new gui.Text({
-    x: 100,
-    y: 150,
-    textSize : 24,
-    fillableText : "my name is blah",
-});
-
-var menu = new gui.Menu({
-    x : canvas.width - 64,
-    y : canvas.height / 2,
-    width : 64,
-    height : 192,
-    items : 3,
-    itemSize : 64,
-    offsetX : 10,
-    offsetY : 10,
-});
 
 game.gui = gui;
 //var health = new GUI("Health", 20, game.height - 40, 40, 20, p.stats.health);
@@ -134,6 +140,7 @@ game.gui = gui;
 ////health.draw(game.context);
 
 //console.log(menu.Menu);
+console.log(gui.UIObjects);
 game.Run();
 console.log(p.stats.health);
 console.log(game.entities[0]);

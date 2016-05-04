@@ -64,6 +64,7 @@ Purpl = function(canvas, width, height)
 			width : 5,
 			height : 5,
 			down : false,
+			clicked : false,
 		}
 	};
 
@@ -134,9 +135,13 @@ Purpl = function(canvas, width, height)
 		});
 		window.addEventListener('mousedown', function(e){
 			engine.input.mouse.down = true;
+			engine.input.mouse.clicked = !engine.input.mouse.clicked;
+
 		});
 		window.addEventListener('mouseup', function(e){
+			
 			engine.input.mouse.down = false;
+
 		})
 		
 		//for resizing canvas

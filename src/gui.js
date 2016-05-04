@@ -7,7 +7,7 @@ GUI = function(context) {
 		gui.context = context;
 
 		// array of all ui objects that are created
-		gui.UIObjects = [];0
+		gui.UIObjects = [];
 
 	//gui draw function
 	gui.draw = function() {
@@ -46,14 +46,14 @@ GUI.prototype.Button = function(options)
 
 		button.context = gui.context;
 
-		button.hovered = false;
+		button.hovered = options.hover || false;
 		button.clicked = false;
 
 		//button.hover = false;
 
 		//button.draw(button.context);
 
-		gui.UIObjects.push(this);
+		//gui.UIObjects.push(this);
 
 
 
@@ -75,22 +75,29 @@ GUI.prototype.Button = function(options)
 
 		button.update = function(input) {
 			//console.log(input);
-			if(collides(button, input.mouse)) {	
+			var collision = false;
+			if(collides(this, input.mouse)) {	
+				collision = true;
+				this.hovered = true;
+				//console.log(this.hovered);
 				
-				button.hovered = true;
-				if(input.mouse.cliked){
-					button.clicked = true;
+				if(input.mouse.clicked){
+					this.clicked = true;
+					//console.log(this.clicked);
 				}
-			}
-			else { 
-				button.hovered = false;
-			}
-			if(!input.mouse.down){
-				button.clicked = false;
-			}
-		}
-	};
+				else
+				{
+					this.clicked = false;
+				}
 
+			}
+			else 
+			{ 
+				this.hovered = false;
+				collision = false;
+			}
+		};
+}
 GUI.prototype.Text = function(options)
 {
 	var	text = this;
@@ -99,7 +106,7 @@ GUI.prototype.Text = function(options)
 		text.textSize = options.textSize
 		text.filledText = options.fillableText;
 
-	gui.UIObjects.push(this);
+	//gui.UIObjects.push(this);
 
 	text.draw = function() {
 		
@@ -119,7 +126,7 @@ GUI.prototype.Text = function(options)
 			if(collides(this, input.mouse)) {	
 				
 				this.hovered = true;
-				if(input.mouse.cliked){
+				if(input.mouse.down){
 					this.clicked = true;
 				}
 			}
@@ -140,33 +147,26 @@ GUI.prototype.Menu = function(options) {
 		menu.y = options.y;
 		menu.width = options.width;
 		menu.height = options.height;
-		menu.items = options.items;
-		menu.itemSize = options.itemSize;
-		menu.image = options.image;
-
 		menu.offsetX = options.offsetX;
 		menu.offsetY = options.offsetY;
-		
-		gui.UIObjects.push(this);
 
-		menu.draw = function() {
-			//draw menu background
-			gui.context.save();
-				gui.context.translate(0, -menu.height/2);
-				//here could be bacground image
-				gui.context.fillStyle = "black";
-				gui.context.fillRect(menu.x, menu.y, menu.width + menu.offsetX, menu.height + menu.offsetY);
-				//gui.context.stroke();
+		menu.items = [];
+		menu.itemsLength = options.items;
+		menu.itemSize = options.itemSize;
+
+		menu.inventory = false;
+		menu.image = options.image;
+
+
+		
+		//gui.UIObjects.push(this);
+		menu.initializeItems = function() {
+			for (var i = 0; i < menu.itemsLength; i++) {
+				// console.log(menu.itemsLength);
 					
-					//draw items
-					//each item should be a button!!!!! 
-				gui.context.save();
-					for (var i = 0; i < menu.items; i++) {
-						var iSize = menu.y + (i  * menu.itemSize);
-						//here too should be some image
-						//gui.context.fillStyle = "red";
-						//gui.context.fillRect(menu.x + offsetX, iSize + offsetY , size - offsetX, size - offsetY);
-						var tempButton = new gui.Button({
+					var iSize = menu.y + (i  * menu.itemSize);
+				
+					menu.items[i] = new gui.Button({
 							x: menu.x,
 							y: iSize,
 
@@ -175,111 +175,155 @@ GUI.prototype.Menu = function(options) {
 
 							offset_x: menu.offsetX,
 							offset_y: menu.offsetY,
-						})
-						tempButton.draw();
-
+						});	
+				};
+				var inv = new menu.Inventory({ 
+					x : menu.x - 400,
+					y : menu.y - 10,
+					itemSize : 64,
+				});
+				menu.inventory = inv;
+		}
+		menu.draw = function() {
+			//draw menu background
+			gui.context.save();
+				//gui.context.translate(0, -menu.height/2);
+				//here could be bacground image
+				gui.context.fillStyle = "black";
+				gui.context.fillRect(menu.x, menu.y, menu.width + menu.offsetX, menu.height + menu.offsetY);
+				//gui.context.stroke();	
+								
+				gui.context.save();
+					for (var i = 0; i < menu.items.length; i++) {
+						menu.items[i].draw();
 					};
-
-				gui.context.restore();	
 					
+				
+				menu.inventory.draw();
+				gui.context.restore();
+
 			gui.context.restore();
+
+
 		}
 
 		menu.update = function(input) {
 			//console.log(input);
-			if(collides(this, input.mouse)) {	
-				
-				this.hovered = true;
-				if(input.mouse.cliked){
-					this.clicked = true;
+			var down = false;
+			for (var i = 0; i < menu.items.length; i++) {
+				menu.items[i].update(input);
+				//console.log(input);
+				menu.inventory.update(menu.items[0].clicked);
+			};
+		}
+		//needs to be refactored to constructor
+		menu.Inventory = function(options)
+		{
+			//x ,y w, h, bacground color
+			//if(!this.hide){}
+
+			var inventory = this;
+				inventory.x = options.x;
+				inventory.y = options.y;
+
+				//items thats in backpack
+				inventory.items = [];
+				inventory.itemSize = options.itemSize;
+
+				inventory.visible = false;
+
+			//for now will leave this.
+			var offsetX = 10;
+			var offsetY = 10;
+
+			//start bacground
+
+			inventory.draw = function() {
+				if (this.visible) {
+
+					gui.context.save();
+						gui.context.translate(0, -menu.height/2);
+						//here could be bacground image
+						gui.context.fillStyle = "#6600cc";
+						gui.context.fillRect(inventory.x, inventory.y , 400, menu.height + 15);
+
+						//start inventory grid
+						gui.context.save();
+							for(var r = 0; r < 3; r++){
+								for(var c = 0; c < 6; c++){
+									var gridY =  inventory.y + (r * inventory.itemSize);
+									var gridX =  inventory.x + (c * inventory.itemSize);
+
+									gui.context.fillStyle = "red";
+									gui.context.fillRect(gridX + offsetX, gridY + offsetY , inventory.itemSize - offsetX, inventory.itemSize - offsetY);
+									var text1 = new gui.Text({
+									    x : gridX + offsetX,
+									    y : gridY + 70,
+									    textSize : 10,
+									    fillableText : "item",
+									});
+									text1.draw();
+									
+								}
+							}
+							//restore inventory grid
+						gui.context.restore();
+
+						//restore bacground
+					gui.context.restore();
+
 				}
+			
+			};
+
+			inventory.update = function(down) {
+
+				if (down) {
+					//console.log(down);
+					inventory.visible = true;
+				}
+				else { inventory.visible = false};
+				
 			}
-			else { 
-				this.hovered = false;
-			}
-			if(!input.mouse.down){
-				this.clicked = false;
-			}
-		}
-/*
-		if(menu.inventory) {
-			menu.Inventory(context);
-		}
-		if (menu.Stats) {
-			menu.Stats(context);	
+			
+
+
 		};
-		
-	menu.Inventory = function(context)
-	{
-		//x ,y w, h, bacground color
-		//if(!this.hide){}
 
-		var x = menu.x - 400;
-		var y = menu.y - 10;
-		var offsetX = 10;
-		var offsetY = 10;menu
-		var size = 64
-		//start bacground
-		context.save();
-		context.translate(0, -menu.height/2);
-		//here could be bacground image
-		context.fillStyle = "#6600cc";
-		context.fillRect(x, y , 400, menu.height + 15);
+		menu.Stats = function(context, actor)
+		{
+			var x = this.x - 400;
+			var y = this.y;
+			var height = this.height + 15;
+			var offsetX = 10;
+			var offsetY = 10;
+			var size = 64
 
-		//start inventory grid
-		context.save();
-		for(var r = 0; r < 3; r++){
-			for(var c = 0; c < 6; c++){
-				var gridY =  y + (r * size);
-				var gridX =  x + (c * size);
+		var Health = 10;
+		var Agility = 10;
+		var Strength = 10;
 
-				context.fillStyle = "red";
-				context.fillRect(gridX + offsetX, gridY + offsetY , size - offsetX, size - offsetY);
-				this.text(context, "item" , gridX + offsetX, gridY + 70, 10 );
-			}
-		}
-		//restore inventory grid
-		context.restore();
+			//start bacground
+			gui.context.save();
+			gui.context.translate(0, -this.height/2);
+			//here could be bacground image
+			gui.context.fillStyle = "#6600cc";
+			gui.context.fillRect(x, y , 400, height );
 
-		//restore bacground
-		context.restore();
+				//start stats
+				gui.context.save();
+				/*
+				this.text(context, "Stats" , x + 3, y + 20  , 20);
+				this.text(context, "Health: " + Health, x + 5, y + 40  , 20);
+				this.text(context, "Agility: " + Agility, x + 5, y + 60  , 20);
+				this.text(context, "Strength: " + Strength, x + 5, y + 80  , 20);
+				*/
+				gui.context.restore();
 
+			gui.context.restore();
 
-	};
-
-	menu.Stats = function(context, actor)
-	{
-		var x = this.x - 400;
-		var y = this.y;
-		var height = this.height + 15;
-		var offsetX = 10;
-		var offsetY = 10;
-		var size = 64
-
-	var Health = 10;
-	var Agility = 10;
-	var Strength = 10;
-
-		//start bacground
-		context.save();
-		context.translate(0, -this.height/2);
-		//here could be bacground image
-		context.fillStyle = "#6600cc";
-		context.fillRect(x, y , 400, height );
-
-			//start stats
-			context.save();
-			this.text(context, "Stats" , x + 3, y + 20  , 20);
-			this.text(context, "Health: " + Health, x + 5, y + 40  , 20);
-			this.text(context, "Agility: " + Agility, x + 5, y + 60  , 20);
-			this.text(context, "Strength: " + Strength, x + 5, y + 80  , 20);
-
-			context.restore();
-
-		context.restore();
-
-	};
-*/
+		};
+	menu.initializeItems();
 
 }
 

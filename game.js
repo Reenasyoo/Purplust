@@ -30,23 +30,8 @@ game.load(['sprite', 'player', 'tileset']);
 
 var m = new Map(ground, game.context, game.resources['tileset'].image);
 game.world = m;
+gui = new GUI(game.context, game.actor);
 
-var e = new Entity({
-    x : 150,
-    y : 32,
-    width : 32,
-    height : 32,
-    map : m,
-});
-e.sprite = new Sprite({
-            image : game.resources['sprite'].image,
-            width: 32,
-            height: 32,
-            numberOfFrames : 3,
-            ticksPerFrame : 6,
-});
-
-game.entities.push(e);
 
 
 
@@ -60,6 +45,15 @@ p.entity = new Entity({
     height : 32,
     map : m,
 });
+p.entity.healthBar = new gui.Bar({
+    label : "Health",
+    x : p.x,
+    y : p.y,
+    width : 32,
+    height : 10,
+    fullLenght : 10,
+    currentLenght : 5,
+});
 p.entity.sprite = new Sprite({
             image : game.resources['player'].image,
             width: 32,
@@ -67,6 +61,34 @@ p.entity.sprite = new Sprite({
             numberOfFrames : 3,
             ticksPerFrame : 3,
 });
+game.actor = p;
+
+var e = new Entity({
+    x : 150,
+    y : 32,
+    width : 32,
+    height : 32,
+    map : m,
+    //hb : healthBar,
+});
+e.healthBar = new gui.Bar({
+   // label : "Health",
+    x : e.x,
+    y : e.y,
+    width : 32,
+    height : 10,
+    fullLenght : 10,
+    currentLenght : 5,
+});
+
+e.sprite = new Sprite({
+            image : game.resources['sprite'].image,
+            width: 32,
+            height: 32,
+            numberOfFrames : 3,
+            ticksPerFrame : 6,
+});
+game.entities.push(e);
 
 var e2 = new Entity({
     x : 150,
@@ -82,20 +104,19 @@ e2.sprite = new Sprite({
             numberOfFrames : 3,
             ticksPerFrame : 6,
 });
+e2.healthBar = new gui.Bar({
+   // label : "Health",
+    x : e2.x,
+    y : e2.y,
+    width : 32,
+    height : 10,
+    fullLenght : 10,
+    currentLenght : 5,
+});
 
 game.entities.push(e2);
 
-game.actor = p;
 
-gui = new GUI(game.context);
-
-var text1 = new gui.Text({
-    x: 100,
-    y: 150,
-    textSize : 24,
-    fillableText : "my name is blah",
-});
-gui.UIObjects.push(text1);
 
 var menu = new gui.Menu({
     x : canvas.width - 80,
@@ -109,16 +130,11 @@ var menu = new gui.Menu({
 });
 gui.UIObjects.push(menu);
 
-var bar = new gui.Bar({
-    label : "Health",
-    x : 20,
-    y : game.height - 100,
-    width : 300,
-    height : 50,
-    fullLenght : 10,
-    currentLenght : 5,
-});
-gui.UIObjects.push(bar);
+
+
+
+
+
 /*
 var button = new gui.Button({
     x: 600,
@@ -130,15 +146,14 @@ var button = new gui.Button({
 });
 gui.UIObjects.push(button);
 
-var button2 = new gui.Button({
-    x: 400,
-    y: 400,
-
-    width: 100,
-    height: 100,
-
+var text1 = new gui.Text({
+    x: 100,
+    y: 150,
+    textSize : 24,
+    fillableText : "my name is blah",
 });
-gui.UIObjects.push(button2);
+gui.UIObjects.push(text1);
+
 */
 
 game.gui = gui;
@@ -148,9 +163,10 @@ game.gui = gui;
 
 ////health.draw(game.context);
 
-//console.log(menu.Menu);
-console.log(gui.UIObjects);
+
 game.Run();
-console.log(p.stats.health);
-console.log(game.entities[0]);
+//console.log(p.stats.health);
+//console.log(game.entities[0]);
+//console.log(menu.Menu);
+//console.log(gui.UIObjects);
 

@@ -101,7 +101,9 @@ Purpl = function(canvas, width, height)
 	engine.Run = function()
 	{
 		window.addEventListener('resize', engine.setCanvasDimentions, false);
+
 		window.addEventListener('keydown', function(e) {
+			e.preventDefault()
     		engine.keysDown[e.keyCode] = true;
     		if(e.keyCode == 70)
 			{
@@ -122,7 +124,7 @@ Purpl = function(canvas, width, height)
 				//console.log(engine.debug);
 
 			};
-			engine.input.attack = false;
+			//engine.input.attack = false;
 			
     		delete engine.keysDown[e.keyCode];
 		});
@@ -179,6 +181,7 @@ Purpl = function(canvas, width, height)
 	{
 		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities);
 		//console.log(engine.actor.x);
+
 
 		for (var i = 0; i < engine.entities.length; i++) {
 			engine.entities[i].update(deltaTime, engine.input, engine.debug);

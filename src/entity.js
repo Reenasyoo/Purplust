@@ -27,6 +27,7 @@ Entity = function(options)
 	var entity = this;
 
 	entity.map = options.map;
+	entity.type = options.type;
 
 	entity.x = options.x; 
 	entity.y = options.y;
@@ -62,6 +63,9 @@ Entity = function(options)
 	entity.moving = false;
 
 	entity.sprite;
+	entity.healthBar;
+
+	entity.health = 10;
 	
 	entity.draw = function(context, color) 
 	{	
@@ -89,6 +93,8 @@ Entity = function(options)
 		{
 			entity.sprite.draw(context, entity.x, entity.y, entity.width, entity.height);
 		}
+
+		entity.healthBar.draw();
 		
 	};
 	entity.update = function(dt, mouse, debug)
@@ -101,6 +107,9 @@ Entity = function(options)
 		entity.y += entity.velocityY * dt;
 		entity.x += entity.velocityX  * dt;
 		entity.collision();
+
+		//console.log(entity);
+		entity.healthBar.update(entity, entity.health);
 	};
 
 	//working tilebased collision with gravity
@@ -239,13 +248,20 @@ Actor = function(options){
 			actor.entity.collision();
 			 
 			if(input.attack){
-				actor.attack(actor.wepon);
+				actor.attack(actor.wepon, dt);
 				for (var i = 0; i < entities.length; i++) {
 					var isColliding = collides(actor.entity, entities[i]);
 					if(isColliding)
 					{
-				 		entities.splice(i, 1);
-	                	i--;
+				 		
+	                	entities[i].health -= 1;
+	                	if (entities[i].health <= 0) {
+
+	                		entities.splice(i, 1);
+	                		i--;
+	                	};
+	                	
+	                	//console.log(entities[i].health);
 	                	console.log("entities left: " + entities.length);
 					}
 				};
@@ -253,11 +269,13 @@ Actor = function(options){
 				console.log("F");
 
 			}
+			input.attack = false;
 		};
 
 		actor.draw = function(context)
 		{	
 			actor.entity.draw(context);
+
 			if(actor.entity.direction == 'left')
 			{
 				context.save();
@@ -312,13 +330,35 @@ Actor = function(options){
 	
 
 		};
-		actor.attack = function(wepon)
+		actor.attack = function(wepon, dt)
 		{
-			wepon.degrees = wepon.degrees + 30;
-		};
+			var speed = 2;
+			var oldDeg = wepon.degrees;
+
+			if (wepon.degrees < (oldDeg + 10)) {
+				wepon.degrees += speed * dt;
+			}
+				
+		}
 
 }
 /*
+
+
+            if (tickCount > ticksPerFrame) {
+
+				tickCount = 0;
+				
+                // If the current frame index is in range
+                if (frameIndex < numberOfFrames - 1) {	
+                    // Go to the next frame
+                    frameIndex += 1;
+                } else {
+                    frameIndex = 0;
+                }
+            }
+
+
 function lineToAngle(ctx, x1, y1, length, angle) {
 
     angle *= Math.PI / 180;

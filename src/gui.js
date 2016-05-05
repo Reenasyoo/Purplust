@@ -1,6 +1,6 @@
 
 // gui constructor
-GUI = function(context) {
+GUI = function(context, actor) {
 	// gui this pointer
 	var gui = this;
 		// context object
@@ -9,13 +9,16 @@ GUI = function(context) {
 		// array of all ui objects that are created
 		gui.UIObjects = [];
 
+		//actor object to follow
+		gui.actor = actor || false;
+
 	//gui draw function
 	gui.draw = function() {
 		// every uiobject has his own draw function
 		// so its easy to call them in loop
 		// passing just context object
 		for (var i = 0; i < gui.UIObjects.length; i++) {
-			gui.UIObjects[i].draw(gui.context);
+			gui.UIObjects[i].draw();
 		};
 	}
 	// gui update function that will be inherited by every uiobject
@@ -101,7 +104,7 @@ GUI.prototype.Button = function(options)
 GUI.prototype.Bar = function(options){
 
 	var bar = this;
-		bar.x = options.x;
+		bar.x = options.x - 10;
 		bar.y = options.y;
 		bar.width = options.width;
 		bar.height = options.height;
@@ -113,13 +116,18 @@ GUI.prototype.Bar = function(options){
 
 		bar.draw = function()
 		{
-			var text1 = new gui.Text({
-				x : bar.x,
-				y : bar.y - 3,
-				textSize : 20,
-				fillableText : bar.label,
-			});
-			text1.draw();
+
+
+
+			if (typeof bar.label !== typeof undefined) {
+				var text1 = new gui.Text({
+					x : bar.x,
+					y : bar.y - 3,
+					textSize : 20,
+					fillableText : bar.label,
+				});
+			};
+			
 			// need able to change color
 			gui.context.save();
 
@@ -140,8 +148,12 @@ GUI.prototype.Bar = function(options){
 			gui.context.restore();
 		}
 
-		bar.update = function(input) {
+		bar.update = function(entity, object) {
+			
+			bar.x = entity.x ;
+			bar.y = entity.y - 10;
 
+			bar.currentLenght = object;
 		}
 }
 GUI.prototype.Text = function(options)
@@ -290,7 +302,7 @@ GUI.prototype.Menu = function(options) {
 			inventory.setupBag = function() {
 
 				for (var i = 0; i < items.length; i++) {
-					items[i]
+					items[i];
 				};
 			}
 

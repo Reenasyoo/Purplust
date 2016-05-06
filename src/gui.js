@@ -78,13 +78,13 @@ GUI.prototype.Button = function(options)
 
 		button.update = function(input) {
 			//console.log(input);
-			var collision = false;
+			//var collision = false;
 			if(collides(this, input.mouse)) {	
-				collision = true;
+				//collision = true;
 				this.hovered = true;
 				//console.log(this.hovered);
 				
-				if(input.mouse.clicked){
+				if(input.mouse.clicked && this.hovered){
 					this.clicked = true;
 					//console.log(this.clicked);
 				}
@@ -97,7 +97,7 @@ GUI.prototype.Button = function(options)
 			else 
 			{ 
 				this.hovered = false;
-				collision = false;
+				//collision = false;
 			}
 		};
 }

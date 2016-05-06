@@ -344,21 +344,6 @@ Actor = function(options){
 }
 /*
 
-
-            if (tickCount > ticksPerFrame) {
-
-				tickCount = 0;
-				
-                // If the current frame index is in range
-                if (frameIndex < numberOfFrames - 1) {	
-                    // Go to the next frame
-                    frameIndex += 1;
-                } else {
-                    frameIndex = 0;
-                }
-            }
-
-
 function lineToAngle(ctx, x1, y1, length, angle) {
 
     angle *= Math.PI / 180;

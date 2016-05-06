@@ -72,7 +72,7 @@ var e = new Entity({
     //hb : healthBar,
 });
 e.healthBar = new gui.Bar({
-   // label : "Health",
+    label : "Health",
     x : e.x,
     y : e.y,
     width : 32,

@@ -143,6 +143,7 @@ Purpl = function(canvas, width, height)
 		window.addEventListener('mouseup', function(e){
 			
 			engine.input.mouse.down = false;
+			engine.mouse.clicked = false;
 
 		})
 		

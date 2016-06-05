@@ -1,4 +1,4 @@
-			function drawRotatedRect(ctx, x, y, width, height, degrees) {
+function drawRotatedRect(ctx, x, y, width, height, degrees) {
 
 			    // first save the untranslated/unrotated context
 			    ctx.save();
@@ -94,7 +94,9 @@ Entity = function(options)
 			entity.sprite.draw(context, entity.x, entity.y, entity.width, entity.height);
 		}
 
-		entity.healthBar.draw();
+		if (typeof entity.healthBar != "undefined" ) {
+			entity.healthBar.draw();
+		}
 		
 	};
 	entity.update = function(dt, mouse, debug)
@@ -219,20 +221,28 @@ Actor = function(options){
 			health : 10, 
 			agility : 10,
 			power : 10,
+			level : 1,
+
 		};
 		actor.race = options.race;
-		actor.clas = options.clas;
+		actor.klass = options.clas;
 		actor.level = 69;
 		actor.profession = "Woodcutter";
 
 		actor.backpack = false;
 		actor.wepon = false;
+		actor.gotI = [];
+		actor.healthBar;
+		actor.Name;
+				 
 
 		
 		//actor.atack
 
 		actor.update = function(dt, keyboard, input, entities)
 		{
+					
+			actor.Name.update(input);
 			actor.wepon = {
 				x : actor.entity.x + 5,
 				y : actor.entity.y + 25,
@@ -253,23 +263,36 @@ Actor = function(options){
 					var isColliding = collides(actor.entity, entities[i]);
 					if(isColliding)
 					{
-				 		
 	                	entities[i].health -= 1;
+	                
 	                	if (entities[i].health <= 0) {
-
 	                		entities.splice(i, 1);
 	                		i--;
 	                	};
 	                	
 	                	//console.log(entities[i].health);
-	                	console.log("entities left: " + entities.length);
+	                	//console.log("entities left: " + entities.length);
 					}
 				};
 				
-				console.log("F");
+				//console.log("F");
 
 			}
 			input.attack = false;
+
+			for (var i = 0; i < items.itemsList.length; i++) {
+				
+				//collision between player and item on map
+				if (collides(actor.entity, items.itemsList[i])) {
+					items.itemsList[i].visible = false;
+
+					items.itemsList[i].location = "backpack";
+					actor.gotI.push(items.itemsList[i]);
+
+				}
+			};
+			//actor.healthBar.update(actor, actor.health);
+			//console.log(actor.gotI);
 		};
 
 		actor.draw = function(context)
@@ -290,6 +313,10 @@ Actor = function(options){
 				context.restore();
 			}
 
+			//console.log(actor.healthBar);
+			actor.healthBar.draw();
+			actor.Name.draw();
+			
 			
 			//context.fillStyle = "red";
 			//context.fillRect(, actor.wepon.y,actor.wepon.width, actor.wepon.height);

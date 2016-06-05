@@ -17,12 +17,90 @@
 		<script type="text/javascript" src="src/utilities/utilities.js"></script>
 		<script type="text/javascript" src="src/Resource_Manager.js"></script>
 		<script type="text/javascript" src="src/sprite.js"></script>
+		<script type="text/javascript" src="src/items.js"></script> 
 		<script type="text/javascript" src="src/world.js"></script>
 		<script type="text/javascript" src="src/entity.js"></script>
 		<script type="text/javascript" src="src/gui.js"></script>
 		<script type="text/javascript" src="src/g.js"></script>
 		<script type="text/javascript" src="game.js"></script>
 
+
+		<div id = "beforeGame">
+			
+			<div id = "playerSetup">
+				<p>Ievadiet spēlētāja vārdu</p>
+				<input type="nameInput" id="nameInput" >
+				<button id = "submit" onclick="setupPlayer()"> Submit Player settings</button>
+			</div>
+
+			<button id = "start" onclick="startGame()"> Start Game</button>
+		</div>
+			
+			<script type="text/javascript">
+				var bg = document.getElementById('beforeGame');
+				var plSetup = document.getElementById('playerSetup');
+				var starB = document.getElementById('start');
+			
+				var setupPlayer = function() {
+					var playerName = document.getElementById("nameInput").value;
+					
+					var p = new Actor({
+					    race : "huuman",
+					});
+					p.entity = new Entity({
+					    x : 33,
+					    y : 33,
+					    width : 32,
+					    height : 32,
+					    map : m,
+					});
+					p.healthBar = new gui.Bar({
+					    label : "Health",
+					    x : 20,
+					    y : game.height - 32,
+					    width : 200,
+					    height : 30,
+					    fullLenght : 10,
+					    currentLenght : 5,
+					});
+					p.entity.sprite = new Sprite({
+					            image : game.resources['player'].image,
+					            width: 32,
+					            height: 32,
+					            numberOfFrames : 3,
+					            ticksPerFrame : 3,
+					});
+
+					p.Name = new gui.Text({
+					                    x : p.entity.x,
+					                    y : p.entity.y - 3,
+					                    textSize : 20,
+					                    fillableText : playerName,
+					                });
+					game.actor = p;
+
+					plSetup.style.display = "none";
+					starB.style.display = "table";
+
+    				
+				}
+
+				
+
+				var startGame = function() {
+					console.log("presed");
+					bg.style.display = "none";
+
+					//setupPlayer();
+
+					game.Run();
+
+				}
+
+
+			</script>
+
+		</div>
 	  <!--
 		#if we want to set specific canvas
 	  	<canvas id="canvas" width="800" height="600"></canvas> 
@@ -34,8 +112,7 @@
 	  <!-- Css -->
 	   <style type="text/css">
 	   	#html, body{
-	   		width: 100%;	
-			height: 100%;
+
 			margin: 0px;
 			overflow: hidden; /*  Disable scrollbars */
 			display: block;
@@ -43,7 +120,21 @@
 			background-color: gray;
 			
 	   	}
-	  
+	   	#beforeGame {
+	   		position: absolute;
+	   		top: 100px;
+	   		left:  100px;
+	   	}
+
+		#button {
+			display: none;
+		}
+		#start {
+			display: none;
+		}
+		#playerSetup {
+			display: table;
+		} 
 	   </style>
 	</body>
 </html>

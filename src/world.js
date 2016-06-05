@@ -1,3 +1,4 @@
+
 //COLORS
 var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A' },
     COLORS = [ COLOR.PINK, COLOR.YELLOW, COLOR.BRICK, COLOR.BLACK, COLOR.PURPLE, COLOR.GREY ];
@@ -24,7 +25,9 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 	}
 
 	Map.prototype.draw = function()
-	{
+	{	
+
+		// drawing tilemap
 		if(this.tileset){
 			this.drawFromTileset(this.context);
 		}
@@ -32,6 +35,17 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 		{
 			this.drawFromColors(this.context);
 		}
+
+		// drawing all items that are on the map
+		for (var i = 0; i < items.itemsList.length; i++) {
+			// for now drawing one test item
+			if (items.itemsList[i].location == "world") {
+				this.context.fillStyle = "red";
+				this.context.fillRect(items.itemsList[i].x, items.itemsList[i].y, items.width, items.height);
+			};
+
+		};
+
     }
 
     Map.prototype.getMapTileId = function(x , y){
@@ -45,12 +59,16 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 			for(var c = 0; c < this.tileHeight; c++){
                	var tileWidth = this.tileSize;
                	var tileHeight = this.tileSize;
-				var tileId = this.getMapTileId(r,c); //maybe some predef function after goten r/x c/y cords (in tiles)
+
+               	// maybe some predef function after goten r/x c/y cords (in tiles)
+				var tileId = this.getMapTileId(r,c); 
 
 				tempTile = new Tile(r, c, 32, 32, context);
 				tempTile.drawTile(tileId, this.sprite);
 			}
 		}
+
+
     }
 
     Map.prototype.drawFromColors = function(context)
@@ -87,7 +105,7 @@ Tile = function(left, top, width, height, context){
 
 	Tile.prototype.setTile = function()
 	{
-		this.context.rect(this.tileData.left, this.tileData.top, this.tileData.width, this.tileData.height);
+		this.context.fillRect(this.tileData.left, this.tileData.top, this.tileData.width, this.tileData.height);
 	}
 
 	Tile.prototype.setColor = function(colorData)
@@ -96,7 +114,6 @@ Tile = function(left, top, width, height, context){
 	}
 	Tile.prototype.drawTile = function(tile, image)
 	{
-		canvas = document.getElementById("canvas");
 
 		var sourceX = tile % this.tilePerRow;
 		var sourceY = Math.floor(tile / this.tilePerRow);
@@ -109,3 +126,4 @@ Tile = function(left, top, width, height, context){
 			sourceX * this.tileData.width, sourceY * this.tileData.height, this.tileData.width, this.tileData.height, 
 			destinationX , destinationY , this.tileData.width, this.tileData.height);
 	}
+	

@@ -61,10 +61,11 @@ Purpl = function(canvas, width, height)
 		mouse : {
 			x : 50,
 			y : 50,
-			width : 5,
-			height : 5,
+			width : 1,
+			height : 1,
 			down : false,
 			clicked : false,
+			rightClick: false,
 		}
 	};
 
@@ -73,6 +74,7 @@ Purpl = function(canvas, width, height)
 	engine.hover = false;
 
 	engine.debug = false;
+
 
 	engine.initializeCanvas = function()
 	{	
@@ -132,25 +134,31 @@ Purpl = function(canvas, width, height)
 		window.addEventListener('mousemove', function(e){
 			engine.input.mouse.x = e.clientX;
 			engine.input.mouse.y = e.clientY;
-			var coor = "Coordinates: (" + engine.input.mouse.x + "," + engine.input.mouse.y + ")";
-    		//document.getElementById("output").innerHTML = coor;
 		});
+
 		window.addEventListener('mousedown', function(e){
-			engine.input.mouse.down = true;
-			engine.input.mouse.clicked = !engine.input.mouse.clicked;
+			e.preventDefault();
+			engine.input.mouse.clicked = !engine.input.mouse.down;
+        	engine.input.mouse.down = true;
+			
+			if(e.witch === 2){
+				engine.input.mouse.rightClick =  true;
+				console.log(engine.input.mouse.rightClick);
+			}
 
 		});
+
 		window.addEventListener('mouseup', function(e){
-			
 			engine.input.mouse.down = false;
-			engine.mouse.clicked = false;
+        	engine.input.mouse.clicked = false;
 
 		})
-		
-		//for resizing canvas
-		//engine.setCanvasDimentions();
+	
 
-		engine.loop();
+		//for resizing canvas
+		engine.setCanvasDimentions();
+		engine.loop();	
+		
 
 	};
 
@@ -226,6 +234,8 @@ Purpl = function(canvas, width, height)
 		engine.canvas.height = height || window.innerHeight;
 		engine.width = width || window.innerWidth;
 		engine.height = height || window.innerHeight;
+
+
 	};
 	//Get canvas
 	engine.getCanvas = function()

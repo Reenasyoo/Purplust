@@ -1,6 +1,6 @@
 
 // gui constructor
-GUI = function(context, actor) {
+GUI = function(context) {
 	// gui this pointer
 	var gui = this;
 		// context object
@@ -10,7 +10,7 @@ GUI = function(context, actor) {
 		gui.UIObjects = [];
 
 		//actor object to follow
-		gui.actor = actor || false;
+		gui.actor = false;
 
 	//gui draw function
 	gui.draw = function() {
@@ -28,6 +28,10 @@ GUI = function(context, actor) {
 		for (var i = 0; i < gui.UIObjects.length; i++) {
 			gui.UIObjects[i].update(input);
 		};
+	}
+	gui.setActor = function(actor) {
+		gui.actor = actor;
+		//console.log(gui.actor);
 	}
 }
 GUI.prototype.Button = function(options)
@@ -49,10 +53,8 @@ GUI.prototype.Button = function(options)
 
 		button.context = gui.context;
 
-		button.hovered = options.hover || false;
+		button.hovered = false;
 		button.clicked = false;
-
-		//button.hover = false;
 
 		//button.draw(button.context);
 
@@ -79,26 +81,25 @@ GUI.prototype.Button = function(options)
 		button.update = function(input) {
 			//console.log(input);
 			//var collision = false;
+			var wasNotClicked = !this.clicked;
+
 			if(collides(this, input.mouse)) {	
 				//collision = true;
 				this.hovered = true;
 				//console.log(this.hovered);
 				
-				if(input.mouse.clicked && this.hovered){
+				if(input.mouse.clicked && wasNotClicked){
 					this.clicked = true;
 					//console.log(this.clicked);
 				}
-				else
-				{
-					this.clicked = false;
-				}
-
 			}
 			else 
 			{ 
 				this.hovered = false;
 				//collision = false;
 			}
+
+
 		};
 }
 GUI.prototype.Bar = function(options){
@@ -116,9 +117,6 @@ GUI.prototype.Bar = function(options){
 
 		bar.draw = function()
 		{
-
-
-
 			if (typeof bar.label !== typeof undefined) {
 				var text1 = new gui.Text({
 					x : bar.x,
@@ -126,6 +124,7 @@ GUI.prototype.Bar = function(options){
 					textSize : 20,
 					fillableText : bar.label,
 				});
+				text1.draw();
 			};
 			
 			// need able to change color
@@ -195,7 +194,7 @@ GUI.prototype.Text = function(options)
 				this.clicked = false;
 			}
 		}
-	text.draw();
+	//text.draw();
 		
 };
 
@@ -238,7 +237,7 @@ GUI.prototype.Menu = function(options) {
 						});	
 				};
 				var inv = new menu.Inventory({ 
-					x : menu.x - 400,
+					x : menu.x - 500,
 					y : menu.y - 10,
 					itemSize : 64,
 				});
@@ -275,8 +274,34 @@ GUI.prototype.Menu = function(options) {
 			for (var i = 0; i < menu.items.length; i++) {
 				menu.items[i].update(input);
 				//console.log(input);
-				menu.inventory.update(menu.items[0].clicked);
+				menu.inventory.update(input, menu.items[0].clicked);
 			};
+		}
+		menu.slot = function(options) {
+			var slot = this;
+				slot.x = options.x;
+				slot.y = options.y;
+				slot.width = options.width;
+				slot.height = options.height;
+
+				slot.empty = true;
+				slot.type = "item" || options.type,
+				slot.color = "red" || options.color;
+				slot.image;
+
+				slot.slotItem;
+		
+				slot.draw = function()
+				{	
+					//slot bacground
+					gui.context.fillStyle = slot.color;
+					gui.context.fillRect(slot.x, slot.y + 5, slot.width, slot.height - 5);
+
+					if (!slot.empty) {
+						gui.context.fillStyle = slot.slotItem.color;
+						gui.context.fillRect(slot.slotItem.x, slot.slotItem.y, slot.slotItem.width, slot.slotItem.height);
+					};
+				}
 		}
 
 		menu.Inventory = function(options)
@@ -292,52 +317,117 @@ GUI.prototype.Menu = function(options) {
 				inventory.items = [];
 				inventory.itemSize = options.itemSize;
 
-				inventory.visible = false;
+				inventory.visible = true;
+				inventory.backp;
 
 			//for now will leave this.
 			var offsetX = 10;
 			var offsetY = 10;
 
-			//start bacground
-			inventory.setupBag = function() {
 
-				for (var i = 0; i < items.length; i++) {
-					items[i];
-				};
+			//start bacground
+			inventory.drawItems = function(x, y, id, iv) {
+
+				
+				var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 10;
+				var itemHeight = (4 * inventory.itemSize) + (4 * 5) + 10;
+				// item inventory
+				//here could be bacground image
+				//gui.context.fillStyle = "green";
+				// gui.context.fillRect(inventory.x, inventory.y , itemWidth, itemHeight);
+				// here we need just to draw items and inventory
+				if (id.location = "backpack") {
+					id.x = x;
+					id.y = y;
+					id.width = inventory.itemSize - 10;
+					id.height = inventory.itemSize - 10;
+					var col;
+
+					if (id.hovered) {
+						col = "black";
+					}
+					else {
+						col = id.color;
+
+					}
+					gui.context.fillStyle = col;
+
+					gui.context.fillRect(x + 5, y + 5, id.width, id.height);
+						
+					var text1 = new gui.Text({
+						x : x + offsetX +5,
+						y : y + (inventory.itemSize/2 )+5,
+						textSize : 10,
+						fillableText : id.name,
+					});
+				};	
+				
 			}
 
 
 			inventory.draw = function() {
+				//console.log(gui.actor);
 				if (this.visible) {
+					var iv = 0;
+					//inventory width
+					var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 5;
+					var itemHeight = (4 * inventory.itemSize) + (4 * 5) + 5;
+					var itemsInRow = 4;
 
-					var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 10;
-					var itemHeight = (4 * inventory.itemSize) + (4 * 5) + 10;
 					gui.context.save();
-						gui.context.translate(0, -menu.height/2);
-						//here could be bacground image
+						//gui.context.translate(0, -menu.height/2);
+						
+						// full inventory background
 						gui.context.fillStyle = "brown";
-						gui.context.fillRect(inventory.x, inventory.y , itemWidth, itemHeight);
+						gui.context.fillRect(inventory.x, inventory.y , itemWidth + 125, itemHeight);
 
 						//start inventory grid
 						gui.context.save();
+							
 							for(var r = 0; r < 4; r++){
+								
 								for(var c = 0; c < 4; c++){
-									var gridY =  inventory.y + (r * inventory.itemSize) + offsetX;
-									var gridX =  inventory.x + (c * inventory.itemSize) + offsetY;
+									iv++;
+									var gridX =  inventory.x + (r * inventory.itemSize) + offsetX;
+									var gridY =  inventory.y + (c * inventory.itemSize) + offsetY;
 
-									// here we need just to draw items and inventory
-									gui.context.fillStyle = "red";
-									gui.context.fillRect(gridX, gridY, inventory.itemSize - offsetX, inventory.itemSize - offsetY);
-									var text1 = new gui.Text({
-									    x : gridX + offsetX,
-									    y : gridY + 70,
-									    textSize : 10,
-									    fillableText : "item",
-									});
-																		
+								    // access to itemSlot array;
+									for (var i = 0; i < inventory.backp.length; i++) {
+										
+									  	var itemSlotId = inventory.backp[r + (c * itemsInRow)];
+
+										if(itemSlotId != 0 && (typeof itemSlotId != "undefined"))
+								  		{
+								  			inventory.drawItems(gridX, gridY,itemSlotId, iv);
+									    }
+									};   
 								}
+
 							}
 							//restore inventory grid
+						gui.context.restore();
+
+						//start equipment 
+						gui.context.save();
+
+							for (var i = 0; i < 4; i++) {
+							// console.log(menu.itemsLength);
+					
+								var iSize = inventory.y + (i  * inventory.itemSize);
+					
+								
+								var equipment =  new menu.slot({
+									x: inventory.x + itemWidth,
+									y: iSize,
+
+									width: inventory.itemSize,
+									height: inventory.itemSize,
+
+								});
+								equipment.draw();
+							};
+
+						// restore equipment grid
 						gui.context.restore();
 
 						//restore bacground
@@ -347,14 +437,40 @@ GUI.prototype.Menu = function(options) {
 			
 			};
 
-			inventory.update = function(down) {
+			inventory.update = function(input, down) {
 
 				if (down) {
 					//console.log(down);
 					inventory.visible = true;
 				}
-				else { inventory.visible = false};
-				
+				else if(!down){
+					inventory.visible = false;
+				} 
+
+				// not working now
+				// dragging option
+				if (collides(input.mouse, inventory) && input.mouse.down) {
+					inventory.x = input.mouse.x;
+					inventory.y = input.mouse.y;
+				};
+
+				inventory.backp = gui.actor.gotI;
+				//console.log(inventory.backp);
+
+				for (item in inventory.backp) {
+					if(collides(input.mouse, inventory.backp[item])) {
+						//console.log(inventory.backp[i]);
+						oldX = inventory.backp[item].x;
+						oldY = inventory.backp[item].y;
+
+						inventory.backp[item].hovered = true;
+
+						if (input.mouse.down) {
+							console.log(true);
+						}
+					}
+					else inventory.backp[item].hovered = false;
+				};
 			}
 			
 		};
@@ -369,9 +485,9 @@ GUI.prototype.Menu = function(options) {
 			var offsetY = 10;
 			var size = 64
 
-		var Health = 10;
-		var Agility = 10;
-		var Strength = 10;
+			var Health = 10;
+			var Agility = 10;
+			var Strength = 10;
 
 			//start bacground
 			gui.context.save();

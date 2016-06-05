@@ -1,6 +1,3 @@
-
-
-
 var ground = {
     	mapArray : [
         22 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,22,
@@ -34,11 +31,6 @@ var m = new Map(ground, game.context, game.resources['tileset'].image);
 game.world = m;
 gui = new GUI(game.context);
 
-
-
-
-
-
 gui.setActor(game.actor);
 
 var e = new Entity({
@@ -47,8 +39,8 @@ var e = new Entity({
     width : 32,
     height : 32,
     map : m,
-    //hb : healthBar,
 });
+
 e.healthBar = new gui.Bar({
     label : "Health",
     x : e.x,
@@ -94,8 +86,6 @@ e2.healthBar = new gui.Bar({
 
 game.entities.push(e2);
 
-
-
 var menu = new gui.Menu({
     x : canvas.width - 80,
     y : canvas.height / 2,
@@ -108,7 +98,5 @@ var menu = new gui.Menu({
 });
 gui.UIObjects.push(menu);
 
-
 game.gui = gui;
-
 

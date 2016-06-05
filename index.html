@@ -28,9 +28,22 @@
 		<div id = "beforeGame">
 			
 			<div id = "playerSetup">
+
 				<p>Ievadiet spēlētāja vārdu</p>
-				<input type="nameInput" id="nameInput" >
+				<input type="nameInput" id="nameInput"></input>
+
+				<p for="gender">Izvēlaties klasi! </p>
+				<input type="radio" name="classSelect" value="1" >Burvis</input>
+				<input type="radio" name="classSelect" value="0" >Cinitajs</input>
+
+				<p for="gender">Izvēlaties Rasi! </p>
+				<input type="radio" name="raseSelect" value="1" >Cilveks</input>
+				<input type="radio" name="raseSelect" value="0" >Reptilis</input>
+
+
+				<p>Saglabāt spēlētāja iestatijumus</p>
 				<button id = "submit" onclick="setupPlayer()"> Submit Player settings</button>
+
 			</div>
 
 			<button id = "start" onclick="startGame()"> Start Game</button>

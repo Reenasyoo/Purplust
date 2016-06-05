@@ -162,6 +162,7 @@ GUI.prototype.Text = function(options)
 		text.y = options.y;
 		text.textSize = options.textSize
 		text.filledText = options.fillableText;
+		text.fillTextValue = options.fillVal;
 
 	//gui.UIObjects.push(this);
 
@@ -174,7 +175,13 @@ GUI.prototype.Text = function(options)
 			var fontSize = text.textSize + 'px Arial';
 			gui.context.font = fontSize;
 			gui.context.fillStyle = "black";
-			gui.context.fillText(text.filledText, text.x, text.y);
+			if ( typeof text.fillTextValue == "undefined") {
+				gui.context.fillText(text.filledText, text.x, text.y);
+			}
+			else {
+				gui.context.fillText(text.filledText + " : " + text.fillTextValue, text.x, text.y);
+			}
+			
 		gui.context.restore();
 	}
 
@@ -213,6 +220,7 @@ GUI.prototype.Menu = function(options) {
 		menu.itemSize = options.itemSize;
 
 		menu.inventory = false;
+		menu.stats = false;
 
 		menu.image = options.image;
 
@@ -242,6 +250,13 @@ GUI.prototype.Menu = function(options) {
 					itemSize : 64,
 				});
 				menu.inventory = inv;
+
+				var sta = new menu.Stats({
+					x : menu.x - 500,
+					y : menu.y - 10,
+					height : 200,
+				});
+				menu.stats = sta;
 		}
 		menu.draw = function() {
 			//draw menu background
@@ -259,8 +274,8 @@ GUI.prototype.Menu = function(options) {
 					
 				
 				menu.inventory.draw();
-				//not refactored
-				//menu.Stats();
+
+				menu.stats.draw();
 				gui.context.restore();
 
 			gui.context.restore();
@@ -275,6 +290,7 @@ GUI.prototype.Menu = function(options) {
 				menu.items[i].update(input);
 				//console.log(input);
 				menu.inventory.update(input, menu.items[0].clicked);
+				menu.stats.update(input, menu.items[1].clicked);
 			};
 		}
 		menu.slot = function(options) {
@@ -318,7 +334,7 @@ GUI.prototype.Menu = function(options) {
 				inventory.itemSize = options.itemSize;
 
 				inventory.visible = true;
-				inventory.backp;
+				inventory.backp = 16;
 
 			//for now will leave this.
 			var offsetX = 10;
@@ -326,7 +342,7 @@ GUI.prototype.Menu = function(options) {
 
 
 			//start bacground
-			inventory.drawItems = function(x, y, id, iv) {
+			inventory.drawItems = function(x, y, id) {
 
 				
 				var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 10;
@@ -360,6 +376,7 @@ GUI.prototype.Menu = function(options) {
 						textSize : 10,
 						fillableText : id.name,
 					});
+					text1.draw();
 				};	
 				
 			}
@@ -368,7 +385,7 @@ GUI.prototype.Menu = function(options) {
 			inventory.draw = function() {
 				//console.log(gui.actor);
 				if (this.visible) {
-					var iv = 0;
+					
 					//inventory width
 					var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 5;
 					var itemHeight = (4 * inventory.itemSize) + (4 * 5) + 5;
@@ -387,7 +404,7 @@ GUI.prototype.Menu = function(options) {
 							for(var r = 0; r < 4; r++){
 								
 								for(var c = 0; c < 4; c++){
-									iv++;
+									
 									var gridX =  inventory.x + (r * inventory.itemSize) + offsetX;
 									var gridY =  inventory.y + (c * inventory.itemSize) + offsetY;
 
@@ -398,7 +415,7 @@ GUI.prototype.Menu = function(options) {
 
 										if(itemSlotId != 0 && (typeof itemSlotId != "undefined"))
 								  		{
-								  			inventory.drawItems(gridX, gridY,itemSlotId, iv);
+								  			inventory.drawItems(gridX, gridY,itemSlotId);
 									    }
 									};   
 								}
@@ -454,6 +471,8 @@ GUI.prototype.Menu = function(options) {
 					inventory.y = input.mouse.y;
 				};
 
+
+				
 				inventory.backp = gui.actor.gotI;
 				//console.log(inventory.backp);
 
@@ -476,57 +495,71 @@ GUI.prototype.Menu = function(options) {
 		};
 
 		//needs to be refactored to constructor
-		menu.Stats = function()
+		menu.Stats = function(options)
 		{
-			var x = this.x - 400;
-			var y = this.y;
-			var height = this.height + 15;
+			var stats = this;
+				stats.x = options.x;
+				stats.y = options.y;
+				stats.height = options.height;
+
+
+				stats.visible = true;
+
+			//var x = this.x - 400;
+			//var y = this.y;
+
+
 			var offsetX = 10;
 			var offsetY = 10;
-			var size = 64
 
-			var Health = 10;
-			var Agility = 10;
-			var Strength = 10;
+			stats.draw = function() {
+				if (this.visible) {
+					//start bacground
+					gui.context.save();
+					//gui.context.translate(0, -this.height/2);
+					//here could be bacground image
+					gui.context.fillStyle = "#6600cc";
+					gui.context.fillRect(stats.x, stats.y , /*width*/ 400, stats.height );
 
-			//start bacground
-			gui.context.save();
-			gui.context.translate(0, -this.height/2);
-			//here could be bacground image
-			gui.context.fillStyle = "#6600cc";
-			gui.context.fillRect(x, y , 400, height );
+						//start stats
+						gui.context.save();
+						for (var i = 0; i < playerSettings.info.length; i++) {
+							var text = new gui.Text({
+								x : stats.x + 3,
+								y : stats.y + 20 + (i * 20),
+								textSize : 20,
+								fillableText : playerSettings.info[i].name,
+								fillVal : playerSettings.info[i].value,
+							});
+							text.draw();
+						};
+						for (var i = 0; i < playerSettings.stats.length; i++) {
+							// gui.actor.settings.stats[i]
+							var text = new gui.Text({
+							x : stats.x + 200,
+							y : stats.y + 20 + (i * 20),
+							textSize : 20,
+							fillableText : playerSettings.stats[i].name,
+							fillVal : playerSettings.stats[i].value,
+							});
+							text.draw();
+							
+						};
+					
+						gui.context.restore();
+					gui.context.restore();
+				}
+			}
+			stats.update = function(input, down) {
 
-				//start stats
-				gui.context.save();
-				
-				var text1 = new gui.Text({
-					x : x + 3,
-					y : y + 20,
-					textSize : 20,
-					fillableText : "Stats" + Health,
-				});
-				var text1 = new gui.Text({
-					x : x + 5,
-					y : y + 40,
-					textSize : 20,
-					fillableText : "Health" + Health,
-				});
-				var text1 = new gui.Text({
-					x : x + 5,
-					y : y + 60,
-					textSize : 20,
-					fillableText : "Agility" + Health,
-				});
-				var text1 = new gui.Text({
-					x : x + 5,
-					y : y + 80,
-					textSize : 20,
-					fillableText : "Strength" + Health,
-				});
-			
-				gui.context.restore();
-
-			gui.context.restore();
+				if (down) {
+					//console.log(down);
+					stats.visible = true;
+				}
+				else if(!down){
+					stats.visible = false;
+				}
+			}
 
 		};
 	menu.initializeItems();

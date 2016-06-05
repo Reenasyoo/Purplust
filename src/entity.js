@@ -316,6 +316,7 @@ Actor = function(options){
 			//console.log(actor.healthBar);
 			actor.healthBar.draw();
 			actor.Name.draw();
+			//console.log(actor.Name);
 			
 			
 			//context.fillStyle = "red";

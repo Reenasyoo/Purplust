@@ -1,5 +1,52 @@
 //items
 
+var playerSettings = {
+	"info" : [
+
+		{
+			"name" : "name",
+			"value" : "undefined",
+		},
+		{
+			"name" : "level",
+			"value" : "undefined",
+		},
+		{
+			"name" : "currentXp",
+			"value" : "undefined",
+		},
+		{
+			"name" : "race",
+			"value" : "undefined",
+		},
+		{
+			"name" : "class",
+			"value" : "undefined",
+		},
+
+	],
+	"stats" : [
+		{
+			"name" : "health",
+			"value" : 10,
+		},
+		{
+			"name" : "strengt",
+			"value" : "undefined",
+		},
+		{
+			"name" : "agility",
+			"value" : "undefined",
+		},
+		/*
+		{
+			"name" :
+			"value" :
+		},
+		*/
+	],
+}
+
 var items = {
 	"width" : 16,
 	"height" : 16,

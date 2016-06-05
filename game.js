@@ -31,7 +31,6 @@ var m = new Map(ground, game.context, game.resources['tileset'].image);
 game.world = m;
 gui = new GUI(game.context);
 
-gui.setActor(game.actor);
 
 var e = new Entity({
     x : 150,

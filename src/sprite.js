@@ -1,12 +1,10 @@
-
-
 Sprite = function(options)
 {
 	var sprite = this;
-		frameIndex = 0,
-		tickCount = 0,
-		ticksPerFrame = options.ticksPerFrame || 0,
-		numberOfFrames = options.numberOfFrames || 1;
+		sprite.frameIndex = 0,
+		sprite.tickCount = 0,
+		sprite.ticksPerFrame = options.ticksPerFrame || 0,
+		sprite.numberOfFrames = options.numberOfFrames || 1;
 		
 		sprite.width = options.width;
 		sprite.height = options.height;
@@ -16,18 +14,18 @@ Sprite = function(options)
 		
 		sprite.update = function () {
 
-			tickCount += 1;
+			sprite.tickCount += 1;
 
-            if (tickCount > ticksPerFrame) {
+            if (sprite.tickCount > sprite.ticksPerFrame) {
 
-				tickCount = 0;
+				sprite.tickCount = 0;
 				
                 // If the current frame index is in range
-                if (frameIndex < numberOfFrames - 1) {	
+                if (sprite.frameIndex < sprite.numberOfFrames - 1) {	
                     // Go to the next frame
-                    frameIndex += 1;
+                    sprite.frameIndex += 1;
                 } else {
-                    frameIndex = 0;
+                    sprite.frameIndex = 0;
                 }
             }
         };
@@ -36,7 +34,7 @@ Sprite = function(options)
 		{	
 		  context.drawImage(
 		    sprite.image,
-		    frameIndex * sprite.width,
+		    sprite.frameIndex * sprite.width,
 		    0,
 		    sprite.width,
 		    sprite.height,

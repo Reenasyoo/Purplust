@@ -12,10 +12,6 @@ var playerSettings = {
 			"value" : "undefined",
 		},
 		{
-			"name" : "currentXp",
-			"value" : "undefined",
-		},
-		{
 			"name" : "race",
 			"value" : "undefined",
 		},

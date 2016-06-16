@@ -1,3 +1,4 @@
+//spelese pasreizejaa karte
 var ground = {
     	mapArray : [
         22 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ,22,
@@ -38,6 +39,7 @@ var e = new Entity({
     width : 32,
     height : 32,
     map : m,
+    type : "enemy",
 });
 
 e.healthBar = new gui.Bar({
@@ -65,6 +67,7 @@ var e2 = new Entity({
     width : 32,
     height : 32,
     map : m,
+    //type : "enemy",
 });
 e2.sprite = new Sprite({
             image : game.resources['sprite'].image,

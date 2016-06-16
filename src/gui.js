@@ -22,7 +22,6 @@ GUI = function(context) {
 		};
 	}
 	// gui update function that will be inherited by every uiobject
-	//could use some sort of merge or smth for every update funct and obj
 	gui.update = function(input) {
 	/// comments !!!!
 		for (var i = 0; i < gui.UIObjects.length; i++) {
@@ -88,8 +87,12 @@ GUI.prototype.Button = function(options)
 				this.hovered = true;
 				//console.log(this.hovered);
 				
-				if(input.mouse.clicked && wasNotClicked){
+				if(input.mouse.down && wasNotClicked){
 					this.clicked = true;
+					//console.log(this.clicked);
+				}
+				if(input.mouse.down && !wasNotClicked){
+					this.clicked = false;
 					//console.log(this.clicked);
 				}
 			}

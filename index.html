@@ -6,22 +6,18 @@
 		<title>Title</title>
 	</head>
 	<body>
-
-		<!-- Debugger 
-		<div id="output">Coordinates:</div>
-		<div id = "debug">debug mode : </div>
-		-->
+		<p id = "version">Version Alpha 0.1.64 </p>
 
 		<!-- Game file -->
 		<script type="text/javascript" src="src/utilities/math.js"></script>
 		<script type="text/javascript" src="src/utilities/utilities.js"></script>
-		<script type="text/javascript" src="src/Resource_Manager.js"></script>
 		<script type="text/javascript" src="src/sprite.js"></script>
-		<script type="text/javascript" src="src/items.js"></script> 
+		<script type="text/javascript" src="src/settings.js"></script> 
 		<script type="text/javascript" src="src/world.js"></script>
 		<script type="text/javascript" src="src/entity.js"></script>
+		<script type="text/javascript" src="src/Actor.js"></script>
 		<script type="text/javascript" src="src/gui.js"></script>
-		<script type="text/javascript" src="src/g.js"></script>
+		<script type="text/javascript" src="src/purplust.js"></script>
 		<script type="text/javascript" src="game.js"></script>
 
 
@@ -32,14 +28,18 @@
 				<p>Ievadiet spēlētāja vārdu</p>
 				<input type="nameInput" id="nameInput"></input>
 
-				<p for="gender">Izvēlaties klasi! </p>
-				<input type="radio" name="classSelect" value="1" >Burvis</input>
-				<input type="radio" name="classSelect" value="0" >Cinitajs</input>
+				<form id = "clasSel">
+					<p>Izvēlaties klasi! </p>
+					<input type="radio" name="classSelect" value="mage" >Burvis</input>
+					<input type="radio" name="classSelect" value="Warrior" >Cinitajs</input>
+				</form>
 
-				<p for="gender">Izvēlaties Rasi! </p>
-				<input type="radio" name="raseSelect" value="1" >Cilveks</input>
-				<input type="radio" name="raseSelect" value="0" >Reptilis</input>
-
+				<form id = "raceSel">
+					<p>Izvēlaties Rasi! </p>
+					<input type="radio" name="raceSelect" value="Human" >Cilveks</input>
+					<input type="radio" name="raceSelect" value="Reptile" >Reptilis</input>
+				</form>
+				
 
 				<p>Saglabāt spēlētāja iestatijumus</p>
 				<button id = "submit" onclick="setupPlayer()"> Submit Player settings</button>
@@ -56,10 +56,17 @@
 			
 				var setupPlayer = function() {
 					var playerName = document.getElementById("nameInput").value;
+					var playerRace = getRadioValue(document.getElementById("raceSel"), "raceSelect");
+					var playerClass = getRadioValue(document.getElementById("clasSel"), "classSelect");
 					
+					//speletaja konta konstruktors
 					var p = new Actor({
-					    race : "huuman",
+					    race : playerRace,
+					    klass : playerClass,
+					    characterName : playerName,
 					});
+
+					//speletaja entitijas konstruktors
 					p.entity = new Entity({
 					    x : 33,
 					    y : 33,
@@ -67,6 +74,9 @@
 					    height : 32,
 					    map : m,
 					});
+
+					//sis nebutu vajadzigs
+					//izlabot
 					p.healthBar = new gui.Bar({
 					    label : "Health",
 					    x : 20,
@@ -96,34 +106,23 @@
 
 					plSetup.style.display = "none";
 					starB.style.display = "table";
-
-    				
 				}
 
-				
-
 				var startGame = function() {
-					console.log("presed");
 					bg.style.display = "none";
-
-					//setupPlayer();
 
 					game.Run();
 
 				}
-
-
 			</script>
 
 		</div>
 	  <!--
-		#if we want to set specific canvas
-	  	<canvas id="canvas" width="800" height="600"></canvas> 
+		ir iespeja ari izveidot konkreta izmera canvas tagu ar konkretiem dimensiju izmeriem
+		bet sai situacijai tas nav nepieciesams jo canvas tags izveidojas dinamiski
 
+		piemers: <canvas id="canvas" width="800" height="600"></canvas> 
 	  -->
-
-
-
 	  <!-- Css -->
 	   <style type="text/css">
 	   	#html, body{
@@ -134,6 +133,10 @@
 			border: 1px solid red;
 			background-color: gray;
 			
+	   	}
+	   	#version {
+	   		position: absolute;
+	   		right: 0;
 	   	}
 	   	#beforeGame {
 	   		position: absolute;

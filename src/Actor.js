@@ -12,7 +12,7 @@ Actor = function(options){
 
 		};
 		actor.race = options.race;
-		actor.clas = options.clas;
+		actor.klass = options.klass;
 		actor.level = 69;
 		actor.profession = "Woodcutter";
 
@@ -20,13 +20,19 @@ Actor = function(options){
 		actor.wepon = false;
 		actor.gotI = [];
 		actor.healthBar;
-				 
-
+		actor.Name;
 		
-		//actor.atack
+		//saglabaa speletaja datus
+		playerSettings.info[0].value = actor.characterName;
+		playerSettings.info[1].value = actor.level;
+		playerSettings.info[2].value = actor.race;
+		playerSettings.info[3].value = actor.klass; 
+
 
 		actor.update = function(dt, keyboard, input, entities)
 		{
+					
+			actor.Name.update(input);
 			actor.wepon = {
 				x : actor.entity.x + 5,
 				y : actor.entity.y + 25,
@@ -99,6 +105,8 @@ Actor = function(options){
 
 			//console.log(actor.healthBar);
 			actor.healthBar.draw();
+			//actor.Name.draw();
+			//console.log(actor.Name);
 			
 			
 			//context.fillStyle = "red";
@@ -108,6 +116,7 @@ Actor = function(options){
 		};
 		//Should make it more generic
 		//BUT HOW?
+		//aktiera kustibas funkcija
 		actor.move = function(dt, keysDown)
 		{
 			//Jump
@@ -140,6 +149,7 @@ Actor = function(options){
 	
 
 		};
+		//aktiera uzbruksanas funkcija
 		actor.attack = function(wepon, dt)
 		{
 			var speed = 2;
@@ -152,25 +162,3 @@ Actor = function(options){
 		}
 
 }
-/*
-
-function lineToAngle(ctx, x1, y1, length, angle) {
-
-    angle *= Math.PI / 180;
-    
-    var x2 = x1 + length * Math.cos(angle),
-        y2 = y1 + length * Math.sin(angle);
-    
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-
-    return {x: x2, y: y2};
-}
-			ctx.beginPath();
-    		lineToAngle(ctx, x, y, length, angle);
-    		ctx.lineWidth = 10;
-    		ctx.stroke();
-
-		    angle += dlt;
-		    if (angle < -90 || angle > 0) dlt = -dlt;
-*/

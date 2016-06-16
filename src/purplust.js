@@ -107,6 +107,7 @@ Purpl = function(canvas, width, height)
 		window.addEventListener('keydown', function(e) {
 			e.preventDefault()
     		engine.keysDown[e.keyCode] = true;
+    		
     		if(e.keyCode == 70)
 			{
 				engine.input.attack = true;
@@ -138,8 +139,8 @@ Purpl = function(canvas, width, height)
 
 		window.addEventListener('mousedown', function(e){
 			e.preventDefault();
-			engine.input.mouse.clicked = !engine.input.mouse.down;
-        	engine.input.mouse.down = true;
+			//engine.input.mouse.clicked = 
+        	engine.input.mouse.down = !engine.input.mouse.down;
 			
 			if(e.witch === 2){
 				engine.input.mouse.rightClick =  true;
@@ -193,7 +194,7 @@ Purpl = function(canvas, width, height)
 
 
 		for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[i].update(deltaTime, engine.input, engine.debug);
+			engine.entities[i].update(deltaTime, engine.input, engine.debug, engine.actor);
 			
 		};
 		//need to add input
@@ -201,7 +202,9 @@ Purpl = function(canvas, width, height)
 	}
 
 	engine.render = function()
-	{
+	{	
+		
+
 		engine.context.clearRect(0,0, engine.width, engine.height);
 
 		engine.world.draw();

@@ -66,6 +66,9 @@ Entity = function(options)
 	entity.healthBar;
 
 	entity.health = 10;
+	entity.wepon = false;
+
+	
 	
 	entity.draw = function(context, color) 
 	{	
@@ -80,12 +83,14 @@ Entity = function(options)
 				context.save();
 				context.scale(-1,1);
 				entity.sprite.drawAnimated(context, -entity.x - entity.width, entity.y, entity.width, entity.height);
+				drawRotatedRect(context, -entity.wepon.x - entity.wepon.width , entity.wepon.y, entity.wepon.width, entity.wepon.height, entity.wepon.degrees);
 				context.restore();
 			}
 			if( entity.direction == 'right')
 			{
 				context.save();
 				entity.sprite.drawAnimated(context, entity.x, entity.y, entity.width, entity.height);
+				drawRotatedRect(context, entity.wepon.x, entity.wepon.y, entity.wepon.width, entity.wepon.height, entity.wepon.degrees);
 				context.restore();
 			}
 		}
@@ -99,17 +104,29 @@ Entity = function(options)
 		}
 		
 	};
-	entity.update = function(dt, mouse, debug)
+	entity.update = function(dt, mouse, debug, actor)
 	{	
-		if (mouse.down && debug) {
-			entity.x = mouse.x;
-			entity.y = mouse.y;
-		};
+		entity.wepon = {
+				x : entity.x + 5,
+				y : entity.y + 25,
+				width : 25,
+				height : 4,
+				degrees : -20,
+			}
+		
 		
 		entity.y += entity.velocityY * dt;
-		entity.x += entity.velocityX  * dt;
-		entity.collision();
+		entity.x += entity.velocityX * dt;
 
+		
+
+		if (entity.type == "enemy") {
+			entity.AI(actor, dt);	
+		};
+		
+		entity.collision();
+		
+		
 		//console.log(entity);
 		entity.healthBar.update(entity, entity.health);
 	};
@@ -117,10 +134,12 @@ Entity = function(options)
 	//working tilebased collision with gravity
 	//have bugs:
 	// #diognal collision
+	//entitijas kolizijas metode
 	entity.collision = function()
 	{
 		//COLLISION
 		//Gravity check
+		//gravitacijas parbaude
 		entity.Fall();
 
 		var tileLeft 	= pixelToTileCord(entity.x, 32);
@@ -178,11 +197,8 @@ Entity = function(options)
 					entity.velocityX = 0;
 				}
 			}
-
-			
-			
 	};
-
+	//parbaude ar kartes koliziju
 	entity.tileCollide = function(cordX, cordY)
 	{
 		//entity.map.tilewidth - we should change entity
@@ -196,169 +212,22 @@ Entity = function(options)
 		return entity.canMove;
 	};
 
+	//entitijas leksanas funkcija
 	entity.Jump = function()
 	{
 		entity.velocityY  -= entity.force;
 		entity.jumping = true;
 	};
 
+	//entitijas krisanas funkcija
 	entity.Fall = function()
-	{
+	{	
 		entity.velocityY += entity.tempGravity;
 		entity.falling = true;
 
 	};
 
-}
-
-Actor = function(options){
-
-	var actor = this;
-		actor.entity;
-		//actor = actor.entity;
-		actor.characterName = options.characterName;
-		actor.stats = {
-			health : 10, 
-			agility : 10,
-			power : 10,
-			level : 1,
-
-		};
-		actor.race = options.race;
-		actor.klass = options.clas;
-		actor.level = 69;
-		actor.profession = "Woodcutter";
-
-		actor.backpack = false;
-		actor.wepon = false;
-		actor.gotI = [];
-		actor.healthBar;
-		actor.Name;
-				 
-
-		
-		//actor.atack
-
-		actor.update = function(dt, keyboard, input, entities)
-		{
-					
-			actor.Name.update(input);
-			actor.wepon = {
-				x : actor.entity.x + 5,
-				y : actor.entity.y + 25,
-				width : 25,
-				height : 4,
-				degrees : -20,
-			}
-
-			actor.entity.y += actor.entity.velocityY * dt;
-			actor.entity.x += actor.entity.velocityX  * dt;
-			
-			actor.move(dt, keyboard);
-			actor.entity.collision();
-			 
-			if(input.attack){
-				actor.attack(actor.wepon, dt);
-				for (var i = 0; i < entities.length; i++) {
-					var isColliding = collides(actor.entity, entities[i]);
-					if(isColliding)
-					{
-	                	entities[i].health -= 1;
-	                
-	                	if (entities[i].health <= 0) {
-	                		entities.splice(i, 1);
-	                		i--;
-	                	};
-	                	
-	                	//console.log(entities[i].health);
-	                	//console.log("entities left: " + entities.length);
-					}
-				};
-				
-				//console.log("F");
-
-			}
-			input.attack = false;
-
-			for (var i = 0; i < items.itemsList.length; i++) {
-				
-				//collision between player and item on map
-				if (collides(actor.entity, items.itemsList[i])) {
-					items.itemsList[i].visible = false;
-
-					items.itemsList[i].location = "backpack";
-					actor.gotI.push(items.itemsList[i]);
-
-				}
-			};
-			//actor.healthBar.update(actor, actor.health);
-			//console.log(actor.gotI);
-		};
-
-		actor.draw = function(context)
-		{	
-			actor.entity.draw(context);
-
-			if(actor.entity.direction == 'left')
-			{
-				context.save();
-				context.scale(-1,1);
-				drawRotatedRect(context, -actor.wepon.x - actor.wepon.width , actor.wepon.y, actor.wepon.width, actor.wepon.height, actor.wepon.degrees);
-				context.restore();
-			}
-			if(actor.entity.direction == 'right')
-			{
-				context.save();
-				drawRotatedRect(context, actor.wepon.x, actor.wepon.y, actor.wepon.width, actor.wepon.height, actor.wepon.degrees);		
-				context.restore();
-			}
-
-			//console.log(actor.healthBar);
-			actor.healthBar.draw();
-			actor.Name.draw();
-			//console.log(actor.Name);
-			
-			
-			//context.fillStyle = "red";
-			//context.fillRect(, actor.wepon.y,actor.wepon.width, actor.wepon.height);
-
-
-		};
-		//Should make it more generic
-		//BUT HOW?
-		actor.move = function(dt, keysDown)
-		{
-			//Jump
-			if (32 in keysDown && !actor.entity.jumping && !actor.entity.falling)
-			{
-				actor.entity.Jump();
-				actor.entity.moving = true;
-			}
-			
-			//left
-			if (65 in keysDown)
-			{
-				actor.entity.velocityX -= actor.entity.acceleration * dt;
-				actor.entity.direction = 'left';
-				actor.entity.moving = true;
-				actor.entity.sprite.update();
-			}
-
-			//right
-			if(68 in keysDown)
-			{
-				actor.entity.velocityX += actor.entity.acceleration * dt;
-				actor.entity.direction = 'right';
-				actor.entity.moving = true;
-				actor.entity.sprite.update();
-			}
-			//console.log(entity.direction);
-			//Friction for smooth slowing down
-			actor.entity.velocityX -= actor.entity.velocityX * actor.entity.friction * dt;
-	
-
-		};
-		actor.attack = function(wepon, dt)
+	entity.attack = function(wepon, dt)
 		{
 			var speed = 2;
 			var oldDeg = wepon.degrees;
@@ -369,26 +238,75 @@ Actor = function(options){
 				
 		}
 
+	entity.AI = function(target, dt) {
+
+		var hasTarget = false;
+		var inFightingRange;
+		
+
+		entity.friction = 0.01;
+	//we should calculate it from actor stats
+		entity.acceleration = 0.001;
+
+		//atalums no merka X kordinatas
+		var attalumsFromTargetX = target.entity.x - entity.x;
+		//atalums no merka X kordinatas
+		var attalumsFromTargetY = target.entity.y - entity.y;
+
+		//console.log(attalumsFromTargetX);
+
+		var attacking;
+
+		if ((attalumsFromTargetX < 100 && attalumsFromTargetX > 32) || (attalumsFromTargetX > -100 && attalumsFromTargetX < -32)) {
+			hasTarget = true;
+		}
+		else hasTarget = false;
+
+		if (hasTarget) {
+			if (attalumsFromTargetX >= 30) {
+
+			entity.velocityX += entity.acceleration * dt;
+			entity.direction = 'right';
+			entity.moving = true;
+			entity.sprite.update();
+			}
+			if (attalumsFromTargetX <= -30)  
+			{
+				entity.velocityX -= entity.acceleration * dt;
+				entity.direction = 'left';
+				entity.moving = true;
+				entity.sprite.update();
+			}
+			var att;
+
+			function setAttack(){
+
+				entity.attack(entity.wepon, dt);
+				var isColliding = collides(entity.wepon, target.entity);
+				if(isColliding)
+				{
+		           	target.stats.health -= 1;
+		           	console.log(target);   
+				}
+
+			}
+
+			if((attalumsFromTargetX >= -42) && (attalumsFromTargetX <= 42)) 
+			{
+				
+				att = window.setInterval(setAttack(), 1000);
+			
+			}
+		
+		};
+		
+		
+		//console.log("in fighting range: " + inFightingRange);
+		console.log(attalumsFromTargetX);
+		
+
+		entity.velocityX -= entity.velocityX * entity.friction * dt;
+		
+	}
+
 }
-/*
-
-function lineToAngle(ctx, x1, y1, length, angle) {
-
-    angle *= Math.PI / 180;
-    
-    var x2 = x1 + length * Math.cos(angle),
-        y2 = y1 + length * Math.sin(angle);
-    
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-
-    return {x: x2, y: y2};
-}
-			ctx.beginPath();
-    		lineToAngle(ctx, x, y, length, angle);
-    		ctx.lineWidth = 10;
-    		ctx.stroke();
-
-		    angle += dlt;
-		    if (angle < -90 || angle > 0) dlt = -dlt;
-*/

@@ -29,7 +29,7 @@ Actor = function(options){
 		playerSettings.info[3].value = actor.klass; 
 
 
-		actor.update = function(dt, keyboard, input, entities)
+		actor.update = function(dt, keyboard, input, entities, engine)
 		{
 					
 			actor.Name.update(input);
@@ -53,7 +53,7 @@ Actor = function(options){
 					var isColliding = collides(actor.entity, entities[i]);
 					if(isColliding)
 					{
-	                	entities[i].health -= 1;
+	                	entities[i].health -= 3;
 	                
 	                	if (entities[i].health <= 0) {
 	                		entities.splice(i, 1);
@@ -77,12 +77,19 @@ Actor = function(options){
 					items.itemsList[i].visible = false;
 
 					items.itemsList[i].location = "backpack";
-					actor.gotI.push(items.itemsList[i]);
+					actor.gotI[i] = items.itemsList[i];
+
 
 				}
 			};
-			//actor.healthBar.update(actor, actor.health);
-			//console.log(actor.gotI);
+			actor.healthBar.update(actor.stats.health, actor.entity);
+
+			if (actor.stats.health <= 0) {
+				engine.paused = true;
+				var end = document.getElementById('end');
+				end.style.display = "table";
+			};
+
 		};
 
 		actor.draw = function(context)

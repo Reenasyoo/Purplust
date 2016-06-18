@@ -73,19 +73,23 @@
 					    width : 32,
 					    height : 32,
 					    map : m,
+					    type : "player",
 					});
 
 					//sis nebutu vajadzigs
 					//izlabot
 					p.healthBar = new gui.Bar({
-					    label : "Health",
-					    x : 20,
-					    y : game.height - 32,
-					    width : 200,
-					    height : 30,
+					    
+					    x : 175,
+					    y : game.height - 100,
+					    width : 220,
+					    height : 15,
 					    fullLenght : 10,
 					    currentLenght : 5,
 					});
+
+
+
 					p.entity.sprite = new Sprite({
 					            image : game.resources['player'].image,
 					            width: 32,
@@ -116,7 +120,9 @@
 				}
 			</script>
 
+
 		</div>
+		<h1 id = "end"> Game over</h1>
 	  <!--
 		ir iespeja ari izveidot konkreta izmera canvas tagu ar konkretiem dimensiju izmeriem
 		bet sai situacijai tas nav nepieciesams jo canvas tags izveidojas dinamiski
@@ -153,6 +159,14 @@
 		#playerSetup {
 			display: table;
 		} 
+		#end {
+			position: absolute;
+    		top: 50%;
+    		left: 50%;
+    		transform: translateX(-50%) translateY(-50%);
+    		display: none;
+			
+		}
 	   </style>
 	</body>
 </html>

@@ -45,6 +45,7 @@ Purpl = function(canvas, width, height)
 	engine.time = new Date().getTime();
 	engine.fps = 30;
 	engine.interval = 1000/ engine.fps;
+	engine.paused = false;
 
 	engine.actor = false;
 	engine.entities = [];
@@ -180,22 +181,30 @@ Purpl = function(canvas, width, height)
 		// render engine
 		engine.render();
 
-
+		if (!engine.paused) {
+			window.requestAnimationFrame(engine.loop);
+		};
 		// request next frame
-		window.requestAnimationFrame(engine.loop);
+		
 
 
 	}
 
 	engine.update = function(deltaTime, input)
 	{
-		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities);
+		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities, engine);
 		//console.log(engine.actor.x);
 
 
 		for (var i = 0; i < engine.entities.length; i++) {
 			engine.entities[i].update(deltaTime, engine.input, engine.debug, engine.actor);
 			
+		};
+		if (engine.entities.length == 0) {
+
+			engine.paused = true;
+			var end = document.getElementById('end');
+			end.style.display = "table";
 		};
 		//need to add input
 		engine.gui.update(engine.input);
@@ -216,6 +225,8 @@ Purpl = function(canvas, width, height)
 		engine.gui.draw();
 		//this is for wepon for now
 		engine.actor.draw(engine.context);
+
+		game.context.drawImage(game.resources['ui'].image, 5, game.height - 110, 400, 90);
 
 		
 	}

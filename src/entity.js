@@ -117,18 +117,18 @@ Entity = function(options)
 		
 		entity.y += entity.velocityY * dt;
 		entity.x += entity.velocityX * dt;
-
 		
 
 		if (entity.type == "enemy") {
-			entity.AI(actor, dt);	
+			entity.AI(actor, dt);
+
 		};
 		
 		entity.collision();
 		
 		
 		//console.log(entity);
-		entity.healthBar.update(entity, entity.health);
+		entity.healthBar.update(entity.health, entity);
 	};
 
 	//working tilebased collision with gravity
@@ -242,14 +242,13 @@ Entity = function(options)
 
 		var hasTarget = false;
 		var inFightingRange;
-		
 
 		entity.friction = 0.01;
 	//we should calculate it from actor stats
 		entity.acceleration = 0.001;
 
 		//atalums no merka X kordinatas
-		var attalumsFromTargetX = target.entity.x - entity.x;
+		var disttanceFromTargetX = target.entity.x - entity.x;
 		//atalums no merka X kordinatas
 		var attalumsFromTargetY = target.entity.y - entity.y;
 
@@ -257,56 +256,63 @@ Entity = function(options)
 
 		var attacking;
 
-		if ((attalumsFromTargetX < 100 && attalumsFromTargetX > 32) || (attalumsFromTargetX > -100 && attalumsFromTargetX < -32)) {
+		if ((disttanceFromTargetX < 100 && disttanceFromTargetX > 1) || (disttanceFromTargetX > -100 && disttanceFromTargetX < -1)) {
 			hasTarget = true;
-		}
-		else hasTarget = false;
+			
 
+		}
+		else {
+			hasTarget = false;
+			
+		}
+			
 		if (hasTarget) {
-			if (attalumsFromTargetX >= 30) {
+			if (disttanceFromTargetX >= 30) {
 
 			entity.velocityX += entity.acceleration * dt;
 			entity.direction = 'right';
 			entity.moving = true;
-			entity.sprite.update();
+			entity.sprite.update();	
 			}
-			if (attalumsFromTargetX <= -30)  
+			
+			if (disttanceFromTargetX <= -30)  
 			{
 				entity.velocityX -= entity.acceleration * dt;
 				entity.direction = 'left';
 				entity.moving = true;
 				entity.sprite.update();
-			}
-			var att;
+			}	
 
-			function setAttack(){
-
-				entity.attack(entity.wepon, dt);
-				var isColliding = collides(entity.wepon, target.entity);
+		var isColliding = collides(entity.wepon, target.entity);
 				if(isColliding)
 				{
-		           	target.stats.health -= 1;
-		           	console.log(target);   
-				}
-
-			}
-
-			if((attalumsFromTargetX >= -42) && (attalumsFromTargetX <= 42)) 
-			{
-				
-				att = window.setInterval(setAttack(), 1000);
-			
-			}
+		           	target.stats.health -= 1 /dt;
+		           	console.log(target.stats.health);   
+				}		
 		
 		};
 		
 		
-		//console.log("in fighting range: " + inFightingRange);
-		console.log(attalumsFromTargetX);
-		
 
 		entity.velocityX -= entity.velocityX * entity.friction * dt;
+		//console.log(attalumsFromTargetX);
 		
 	}
 
 }
+
+
+/*
+
+var setAttack = function(){
+				entity.attack(entity.wepon, dt);
+				
+				//var at = setTimeout(setAttack, 1000);
+								
+			}
+
+			if(actor.entity.x - entity.x <= 42 && actor.entity.x - entity.x >= -32){
+				var att = setTimeout(setAttack, 2000);
+			}	
+
+*/

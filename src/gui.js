@@ -145,16 +145,20 @@ GUI.prototype.Bar = function(options){
 					gui.context.fillStyle = "red";
 					gui.context.fillRect(bar.x, bar.y , width , bar.height);
 
+					
+
 				gui.context.restore();
 
 			gui.context.restore();
 		}
 
-		bar.update = function(entity, object) {
+		bar.update = function(object, entity) {
+			if (entity.type != "player") {
+				bar.x = entity.x ;
+				bar.y = entity.y - 10;
+			};
 			
-			bar.x = entity.x ;
-			bar.y = entity.y - 10;
-
+			
 			bar.currentLenght = object;
 		}
 }
@@ -566,7 +570,10 @@ GUI.prototype.Menu = function(options) {
 
 		};
 	menu.initializeItems();
-
 }
 
+GUI.prototype.ui = function() {
+
+	var ui = this;
+}
 

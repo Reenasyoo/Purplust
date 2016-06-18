@@ -52,10 +52,10 @@ Sprite = function(options)
 		    0,
 		    sprite.width,
 		    sprite.height,
-		    x,
-		    y,
-		    width,
-		    height);
+		    x || sprite.x,
+		    y || sprite.y,
+		    width || sprite.width,
+		    height || sprite.height);
 		};
 		
 }

@@ -6,7 +6,16 @@
 		<title>Title</title>
 	</head>
 	<body>
-		<p id = "version">Version Alpha 0.1.64 </p>
+		<p id = "version">Version Alpha 0.1.70 </p>
+		<div id = "controls">
+			<button id = "controlButton" onclick = "showControls()"> Kontroles </button>
+			<div id = "controlList">
+				<p>Kontroles</p>
+				<p>Kusteties pa kreisi : A</p>
+				<p>Kusteties pa labi : D</p>
+				<p>Palekties : Spacebar</p>
+				<p>Iedot pretiniekam pizdi : F</p>
+			</div>
 
 		<!-- Game file -->
 		<script type="text/javascript" src="src/utilities/math.js"></script>
@@ -20,6 +29,7 @@
 		<script type="text/javascript" src="src/purplust.js"></script>
 		<script type="text/javascript" src="game.js"></script>
 
+		</div>
 
 		<div id = "beforeGame">
 			
@@ -50,6 +60,23 @@
 		</div>
 			
 			<script type="text/javascript">
+
+				var controlList = document.getElementById('controlList');
+				var shown = false;
+				var showControls = function() {
+					
+					shown = !shown;
+
+					if (shown) {
+						controlList.style.display = "table";
+					}
+					else {
+						controlList.style.display = "none";
+					}
+					
+				}
+
+
 				var bg = document.getElementById('beforeGame');
 				var plSetup = document.getElementById('playerSetup');
 				var starB = document.getElementById('start');
@@ -138,11 +165,25 @@
 			display: block;
 			border: 1px solid red;
 			background-color: gray;
-			
+	   	}
+	   	#controls {
+	   		position: absolute;
+	   		right: 0;
+	   	}
+	   	#controlButton{
+	   		position: absolute;
+	   		right: 0;
+	   		top : 20;
+	   		width: 100px;
+	   		height: 40px;
+	   	}
+	   	#controlList {
+	   		display: none;
 	   	}
 	   	#version {
 	   		position: absolute;
 	   		right: 0;
+	   		bottom: 0;
 	   	}
 	   	#beforeGame {
 	   		position: absolute;

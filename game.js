@@ -26,7 +26,7 @@ var ground = {
 var game = new Purpl("canvas");
 game.initializeCanvas();
 
-game.load(['sprite', 'player', 'tileset', 'ui']);
+game.load(['sprite', 'player', 'tileset', 'ui', 'inventory-bg','stats-bg']);
 
 var m = new Map(ground, game.context, game.resources['tileset'].image);
 game.world = m;
@@ -97,6 +97,7 @@ var menu = new gui.Menu({
     itemSize : 64,
     offsetX : 5,
     offsetY : 5,
+    image : [game.resources['inventory-bg'].image, game.resources['stats-bg'].image],
 });
 gui.UIObjects.push(menu);
 

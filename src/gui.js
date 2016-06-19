@@ -65,15 +65,22 @@ GUI.prototype.Button = function(options)
 		{
 			//context.drawImage(button.image, button.x, button.y, button.width , button.height);
 			//if image is not set
+			//console.log(button.image);
+			if ( button.image != typeof undefined) {
+				button.context.drawImage(button.image, button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);		
+			}else {
+				if(button.hovered){
+					button.context.fillStyle = "brown";
+					button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
+				}
+				else{
+					button.context.fillStyle = button.color;
+					button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
+				}
+			}
 			
-			if(button.hovered){
-				button.context.fillStyle = "brown";
-				button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
-			}
-			else{
-				button.context.fillStyle = button.color;
-				button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
-			}
+
+			
 
 		};
 
@@ -87,14 +94,12 @@ GUI.prototype.Button = function(options)
 				this.hovered = true;
 				//console.log(this.hovered);
 				
-				if(input.mouse.down && wasNotClicked){
+				if(input.mouse.down){
 					this.clicked = true;
 					//console.log(this.clicked);
 				}
-				if(input.mouse.down && !wasNotClicked){
-					this.clicked = false;
-					//console.log(this.clicked);
-				}
+				else this.clicked = false;
+				
 			}
 			else 
 			{ 
@@ -249,6 +254,8 @@ GUI.prototype.Menu = function(options) {
 
 							offset_x: menu.offsetX,
 							offset_y: menu.offsetY,
+							
+							image : menu.image[i],
 						});	
 				};
 				var inv = new menu.Inventory({ 
@@ -281,8 +288,8 @@ GUI.prototype.Menu = function(options) {
 					
 				
 				menu.inventory.draw();
-
 				menu.stats.draw();
+
 				gui.context.restore();
 
 			gui.context.restore();

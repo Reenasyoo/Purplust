@@ -140,8 +140,8 @@ Purpl = function(canvas, width, height)
 
 		window.addEventListener('mousedown', function(e){
 			e.preventDefault();
-			//engine.input.mouse.clicked = 
-        	engine.input.mouse.down = !engine.input.mouse.down;
+
+        	
 			
 			if(e.witch === 2){
 				engine.input.mouse.rightClick =  true;
@@ -151,7 +151,7 @@ Purpl = function(canvas, width, height)
 		});
 
 		window.addEventListener('mouseup', function(e){
-			engine.input.mouse.down = false;
+			engine.input.mouse.down = !engine.input.mouse.down;
         	engine.input.mouse.clicked = false;
 
 		})

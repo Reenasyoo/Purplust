@@ -47,10 +47,14 @@ Purpl = function(canvas, width, height)
 	engine.interval = 1000/ engine.fps;
 	engine.paused = false;
 
+	engine.resources = [];
+	engine.stateMashine = false;
+
+	engine.objects = [];
+
 	engine.actor = false;
 	engine.entities = [];
-	engine.resources = [];
-	engine.world = false;
+	engine.world;
 	engine.gui = false;
 
 
@@ -67,6 +71,7 @@ Purpl = function(canvas, width, height)
 			down : false,
 			clicked : false,
 			rightClick: false,
+			toogle : false,
 		}
 	};
 
@@ -77,25 +82,19 @@ Purpl = function(canvas, width, height)
 	engine.debug = false;
 
 
-	engine.initializeCanvas = function()
-	{	
+	engine.initializeCanvas = function() {
+		
 		var body = document.getElementsByTagName("body")[0];
-		if(typeof(engine.canvasElement) == "string")
-		{
-			if(!body.hasAttribute(engine.canvasElement))
-			{	
+		if(typeof(engine.canvasElement) == "string") {
+			if(!body.hasAttribute(engine.canvasElement)) {	
 				engine.canvas = document.createElement(engine.canvasElement);
 				engine.setCanvas(engine.canvas, engine.canvasElement);
 				body.appendChild(engine.canvas);
-			}
-			else 
-			{
-			engine.canvas = document.getElementById(engine.canvasElement);
+			} else {
+				engine.canvas = document.getElementById(engine.canvasElement);
 			}
 			engine.setContext(engine.canvas);	
-		}
-		else 
-		{ 
+		} else { 
 			console.log("Canvas Id is not string"); 
 		}
 
@@ -132,30 +131,30 @@ Purpl = function(canvas, width, height)
 			
     		delete engine.keysDown[e.keyCode];
 		});
+
 		//MOUSE
 		window.addEventListener('mousemove', function(e){
 			engine.input.mouse.x = e.clientX;
 			engine.input.mouse.y = e.clientY;
+        	engine.input.mouse.down = (e.which == 1);
+			engine.input.mouse.clicked = (e.which == 1 && !engine.input.mouse.down);
+
 		});
 
 		window.addEventListener('mousedown', function(e){
-			e.preventDefault();
+			engine.input.mouse.down = true;
+			engine.input.mouse.toogle = true;
+			engine.input.mouse.clicked = true;
+					 	
 
-        	
-			
-			if(e.witch === 2){
-				engine.input.mouse.rightClick =  true;
-				console.log(engine.input.mouse.rightClick);
-			}
 
 		});
 
 		window.addEventListener('mouseup', function(e){
-			engine.input.mouse.down = !engine.input.mouse.down;
-        	engine.input.mouse.clicked = false;
+			engine.input.mouse.down = false;
+        	engine.input.mouse.clicked = false;	
 
-		})
-	
+		});
 
 		//for resizing canvas
 		engine.setCanvasDimentions();
@@ -174,10 +173,10 @@ Purpl = function(canvas, width, height)
        // {
         	engine.time = now;
       //  }
-        
+
 
         // update engine
-		engine.update(deltaTime, engine.input.mouse);
+		engine.update(deltaTime, engine);
 		// render engine
 		engine.render();
 
@@ -185,50 +184,21 @@ Purpl = function(canvas, width, height)
 			window.requestAnimationFrame(engine.loop);
 		};
 		// request next frame
-		
-
-
 	}
 
-	engine.update = function(deltaTime, input)
+	engine.update = function(deltaTime, engine)
 	{
-		engine.actor.update(deltaTime, engine.keysDown, engine.input, engine.entities, engine);
-		//console.log(engine.actor.x);
+	
+		engine.stateMashine.update(deltaTime, engine);
 
-
-		for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[i].update(deltaTime, engine.input, engine.debug, engine.actor);
-			
-		};
-		if (engine.entities.length == 0) {
-
-			engine.paused = true;
-			var end = document.getElementById('end');
-			end.style.display = "table";
-		};
-		//need to add input
-		engine.gui.update(engine.input);
+		
 	}
 
 	engine.render = function()
 	{	
-		
-
 		engine.context.clearRect(0,0, engine.width, engine.height);
 
-		engine.world.draw();
-		
-		for (var i = 0; i < engine.entities.length; i++) {
-			engine.entities[i].draw(engine.context);
-		};
-		
-		engine.gui.draw();
-		//this is for wepon for now
-		engine.actor.draw(engine.context);
-
-		game.context.drawImage(game.resources['ui'].image, 5, game.height - 110, 400, 90);
-
-		
+		engine.stateMashine.draw(engine);		
 	}
 	//set canvas propperties
 	engine.setCanvas = function(canvas, cString)

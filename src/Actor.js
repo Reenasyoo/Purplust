@@ -29,10 +29,10 @@ Actor = function(options){
 		playerSettings.info[3].value = actor.klass; 
 
 
-		actor.update = function(dt, keyboard, input, entities, engine)
+		actor.update = function(dt, engine)
 		{
 					
-			actor.Name.update(input);
+			//actor.Name.update(input);
 			actor.wepon = {
 				x : actor.entity.x + 5,
 				y : actor.entity.y + 25,
@@ -44,31 +44,31 @@ Actor = function(options){
 			actor.entity.y += actor.entity.velocityY * dt;
 			actor.entity.x += actor.entity.velocityX  * dt;
 			
-			actor.move(dt, keyboard);
+			actor.move(dt, engine);
 			actor.entity.collision();
 			 
-			if(input.attack){
+			if(engine.input.attack){
 				actor.attack(actor.wepon, dt);
-				for (var i = 0; i < entities.length; i++) {
-					var isColliding = collides(actor.entity, entities[i]);
+				for (var i = 0; i < engine.entities.length; i++) {
+					var isColliding = collides(actor.entity, engine.entities[i]);
 					if(isColliding)
 					{
-	                	entities[i].health -= 3;
+	                	engine.entities[i].health -= 3;
 	                
-	                	if (entities[i].health <= 0) {
-	                		entities.splice(i, 1);
+	                	if (engine.entities[i].health <= 0) {
+	                		engine.entities.splice(i, 1);
 	                		i--;
 	                	};
 	                	
-	                	//console.log(entities[i].health);
-	                	//console.log("entities left: " + entities.length);
+	                	//console.log(engine.entities[i].health);
+	                	//console.log("engine.entities left: " + engine.entities.length);
 					}
 				};
 				
 				//console.log("F");
 
 			}
-			input.attack = false;
+			engine.input.attack = false;
 
 			for (var i = 0; i < items.itemsList.length; i++) {
 				
@@ -84,11 +84,6 @@ Actor = function(options){
 			};
 			actor.healthBar.update(actor.stats.health, actor.entity);
 
-			if (actor.stats.health <= 0) {
-				engine.paused = true;
-				var end = document.getElementById('end');
-				end.style.display = "table";
-			};
 
 		};
 
@@ -124,17 +119,17 @@ Actor = function(options){
 		//Should make it more generic
 		//BUT HOW?
 		//aktiera kustibas funkcija
-		actor.move = function(dt, keysDown)
+		actor.move = function(dt, engine)
 		{
 			//Jump
-			if (32 in keysDown && !actor.entity.jumping && !actor.entity.falling)
+			if (32 in engine.keysDown && !actor.entity.jumping && !actor.entity.falling)
 			{
 				actor.entity.Jump();
 				actor.entity.moving = true;
 			}
 			
 			//left
-			if (65 in keysDown)
+			if (65 in engine.keysDown)
 			{
 				actor.entity.velocityX -= actor.entity.acceleration * dt;
 				actor.entity.direction = 'left';
@@ -143,7 +138,7 @@ Actor = function(options){
 			}
 
 			//right
-			if(68 in keysDown)
+			if(68 in engine.keysDown)
 			{
 				actor.entity.velocityX += actor.entity.acceleration * dt;
 				actor.entity.direction = 'right';

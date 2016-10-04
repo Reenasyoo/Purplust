@@ -2,7 +2,7 @@
 var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A' },
     COLORS = [ COLOR.PINK, COLOR.YELLOW, COLOR.BRICK, COLOR.BLACK, COLOR.PURPLE, COLOR.GREY ];
    
-	Map = function(mapData, context, sprite , width, height ){
+	Map = function(mapData, sprite , width, height ){
 
 		//this.width = width;
 		//this.height = height;
@@ -18,29 +18,30 @@ var COLOR  = { BLACK: '#00000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02
 		//this.tileset = tileset || console.log("tileset hasn't been set");
 
 		this.tileset = true;
-		this.context = context;
+		
 		this.sprite = sprite;
 		
 	}
 
-	Map.prototype.draw = function()
+	Map.prototype.draw = function(context)
 	{	
-
+		
 		// drawing tilemap
 		if(this.tileset){
-			this.drawFromTileset(this.context);
+
+			this.drawFromTileset(context);
 		}
 		else
 		{
-			this.drawFromColors(this.context);
+			this.drawFromColors(context);
 		}
 
 		// drawing all items that are on the map
 		for (var i = 0; i < items.itemsList.length; i++) {
 			// for now drawing one test item
 			if (items.itemsList[i].location == "world") {
-				this.context.fillStyle = "red";
-				this.context.fillRect(items.itemsList[i].x, items.itemsList[i].y, items.width, items.height);
+				context.fillStyle = "red";
+				context.fillRect(items.itemsList[i].x, items.itemsList[i].y, items.width, items.height);
 			};
 
 		};

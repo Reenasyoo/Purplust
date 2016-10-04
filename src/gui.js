@@ -13,19 +13,19 @@ GUI = function(context) {
 		gui.actor = false;
 
 	//gui draw function
-	gui.draw = function() {
+	gui.draw = function(con) {
 		// every uiobject has his own draw function
 		// so its easy to call them in loop
 		// passing just context object
 		for (var i = 0; i < gui.UIObjects.length; i++) {
-			gui.UIObjects[i].draw();
+			gui.UIObjects[i].draw(con);
 		};
 	}
 	// gui update function that will be inherited by every uiobject
-	gui.update = function(input) {
-	/// comments !!!!
+	gui.update = function(engine) {
+		
 		for (var i = 0; i < gui.UIObjects.length; i++) {
-			gui.UIObjects[i].update(input);
+			gui.UIObjects[i].update(engine);
 		};
 	}
 	gui.setActor = function(actor) {
@@ -52,6 +52,8 @@ GUI.prototype.Button = function(options)
 
 		button.context = gui.context;
 
+		button.text = options.text;
+
 		button.hovered = false;
 		button.clicked = false;
 
@@ -66,7 +68,7 @@ GUI.prototype.Button = function(options)
 			//context.drawImage(button.image, button.x, button.y, button.width , button.height);
 			//if image is not set
 			//console.log(button.image);
-			if ( button.image != typeof undefined) {
+			if ( typeof button.image != "undefined") {
 				button.context.drawImage(button.image, button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);		
 			}else {
 				if(button.hovered){
@@ -78,37 +80,45 @@ GUI.prototype.Button = function(options)
 					button.context.fillRect(button.x + button.offset_x, button.y + button.offset_y, button.width - button.offset_x, button.height - button.offset_y);
 				}
 			}
-			
 
-			
+			if (typeof button.text != "undefined") {
 
-		};
-
-		button.update = function(input) {
-			//console.log(input);
-			//var collision = false;
-			var wasNotClicked = !this.clicked;
-
-			if(collides(this, input.mouse)) {	
-				//collision = true;
-				this.hovered = true;
-				//console.log(this.hovered);
-				
-				if(input.mouse.down){
-					this.clicked = true;
-					//console.log(this.clicked);
-				}
-				else this.clicked = false;
-				
-			}
-			else 
-			{ 
-				this.hovered = false;
-				//collision = false;
-			}
-
+				var buttonText = new gui.Text({
+					x : button.x + (button.width / 4),
+					y : button.y + (button.height/ 2),
+					textSize: button.height / 4,
+					fillableText : button.text,
+				});
+				buttonText.draw();
+			};
 
 		};
+
+		button.update = function(engine) {
+
+			var clikedFlag = false;
+			
+			if (collides(this, engine.input.mouse)) {
+	            this.hovered = true;
+	            if (engine.input.mouse.clicked ) {
+	                this.clicked = true;
+	                clikedFlag = true;
+	            }
+
+
+
+		    } else {
+		        this.hovered = false;
+		    }
+
+		    if (!engine.input.mouse.clicked ) {
+		    	this.clicked = false;
+		    }
+		    
+
+	        console.log("mouse cliked: " + engine.input.mouse.clicked);
+
+	    }
 }
 GUI.prototype.Bar = function(options){
 
@@ -145,12 +155,10 @@ GUI.prototype.Bar = function(options){
 				//progress bar
 				gui.context.save();
 
-					var width = ((bar.width / bar.fullLenght) * bar.currentLenght);
+				var width = ((bar.width / bar.fullLenght) * bar.currentLenght);
 					
-					gui.context.fillStyle = "red";
-					gui.context.fillRect(bar.x, bar.y , width , bar.height);
-
-					
+				gui.context.fillStyle = "red";
+				gui.context.fillRect(bar.x, bar.y , width , bar.height);
 
 				gui.context.restore();
 
@@ -175,6 +183,7 @@ GUI.prototype.Text = function(options)
 		text.textSize = options.textSize
 		text.filledText = options.fillableText;
 		text.fillTextValue = options.fillVal;
+		text.textArray = options.textArray;
 
 	//gui.UIObjects.push(this);
 
@@ -187,29 +196,36 @@ GUI.prototype.Text = function(options)
 			var fontSize = text.textSize + 'px Arial';
 			gui.context.font = fontSize;
 			gui.context.fillStyle = "black";
-			if ( typeof text.fillTextValue == "undefined") {
-				gui.context.fillText(text.filledText, text.x, text.y);
-			}
-			else {
-				gui.context.fillText(text.filledText + " : " + text.fillTextValue, text.x, text.y);
+			if (typeof text.filledText != "undefined") {
+				if ( typeof text.fillTextValue == "undefined") {
+					gui.context.fillText(text.filledText, text.x, text.y);
+				}
+				else {
+					gui.context.fillText(text.filledText + " : " + text.fillTextValue, text.x, text.y);
+				}
+			};
+			if( typeof text.textArray != "undefined") {
+				for (var i = 0; i < text.textArray.length; i++) {
+					gui.context.fillText(text.textArray[i], text.x, text.y + (i * text.textSize));
+				};
 			}
 			
 		gui.context.restore();
 	}
 
-		text.update = function(input) {
+		text.update = function(engine) {
 			//console.log(input);
-			if(collides(this, input.mouse)) {	
+			if(collides(this, engine.input.mouse)) {	
 				
 				this.hovered = true;
-				if(input.mouse.down){
+				if(engine.input.mouse.cliked){
 					this.clicked = true;
 				}
 			}
 			else { 
 				this.hovered = false;
 			}
-			if(!input.mouse.down){
+			if(!engine.input.mouse.cliked){
 				this.clicked = false;
 			}
 		}
@@ -286,7 +302,6 @@ GUI.prototype.Menu = function(options) {
 						menu.items[i].draw();
 					};
 					
-				
 				menu.inventory.draw();
 				menu.stats.draw();
 
@@ -297,15 +312,18 @@ GUI.prototype.Menu = function(options) {
 
 		}
 
-		menu.update = function(input) {
-			//console.log(input);
-			var down = false;
+		menu.update = function(engine) {
 			for (var i = 0; i < menu.items.length; i++) {
-				menu.items[i].update(input);
+				menu.items[i].update(engine);
 				//console.log(input);
-				menu.inventory.update(input, menu.items[0].clicked);
-				menu.stats.update(input, menu.items[1].clicked);
+				
 			};
+			if (menu.items[0].clicked) {
+				menu.inventory.update(engine, menu.items[0].clicked);
+			};
+			
+			menu.stats.update(engine, menu.items[1].clicked);
+			
 		}
 		menu.slot = function(options) {
 			var slot = this;
@@ -347,8 +365,10 @@ GUI.prototype.Menu = function(options) {
 				inventory.items = [];
 				inventory.itemSize = options.itemSize;
 
-				inventory.visible = true;
+				inventory.visible = false;
 				inventory.backp = 16;
+
+				var cc = 0;
 
 			//for now will leave this.
 			var offsetX = 10;
@@ -398,7 +418,7 @@ GUI.prototype.Menu = function(options) {
 
 			inventory.draw = function() {
 				//console.log(gui.actor);
-				if (this.visible) {
+				if (inventory.visible) {
 					
 					//inventory width
 					var itemWidth = (4 * inventory.itemSize) + (4 * 5) + 5;
@@ -468,39 +488,26 @@ GUI.prototype.Menu = function(options) {
 			
 			};
 
-			inventory.update = function(input, down) {
+			inventory.update = function(engine, down) {
+				var clikedFlag = false;
+				if(down) {
 
-				if (down) {
-					//console.log(down);
-					inventory.visible = true;
+					inventory.visible = !inventory.visible;
+
+
 				}
-				else if(!down){
-					inventory.visible = false;
-				} 
-
-				// not working now
-				// dragging option
-				if (collides(input.mouse, inventory) && input.mouse.down) {
-					inventory.x = input.mouse.x;
-					inventory.y = input.mouse.y;
-				};
-
-
 				
 				inventory.backp = gui.actor.gotI;
 				//console.log(inventory.backp);
 
 				for (item in inventory.backp) {
-					if(collides(input.mouse, inventory.backp[item])) {
+					if(collides(engine.input.mouse, inventory.backp[item])) {
 						//console.log(inventory.backp[i]);
 						oldX = inventory.backp[item].x;
 						oldY = inventory.backp[item].y;
 
 						inventory.backp[item].hovered = true;
 
-						if (input.mouse.down) {
-							console.log(true);
-						}
 					}
 					else inventory.backp[item].hovered = false;
 				};
@@ -517,7 +524,7 @@ GUI.prototype.Menu = function(options) {
 				stats.height = options.height;
 
 
-				stats.visible = true;
+				stats.visible = false;
 
 			//var x = this.x - 400;
 			//var y = this.y;
@@ -564,14 +571,10 @@ GUI.prototype.Menu = function(options) {
 					gui.context.restore();
 				}
 			}
-			stats.update = function(input, down) {
+			stats.update = function(engine, down) {
 
 				if (down) {
-					//console.log(down);
-					stats.visible = true;
-				}
-				else if(!down){
-					stats.visible = false;
+					stats.visible = !stats.visible;
 				}
 			}
 

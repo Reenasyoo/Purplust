@@ -57,7 +57,7 @@ var items = {
 	    	//
 	    	"location" : "world",
 	    	"x" : 96,
-	    	"y" : 80,
+	    	"y" : 112,
 	    	"width" : 16,
 			"height" : 16,
 			"hovered" : false,
@@ -72,7 +72,7 @@ var items = {
 
 	    	"location" : "world",
 	    	"x" : 256,
-	    	"y" : 80,
+	    	"y" : 336,
 	    	"width" : 16,
 			"height" : 16,
 			"hovered" : false,
@@ -86,7 +86,7 @@ var items = {
 
 	    	"location" : "world",
 	    	"x" : 288,
-	    	"y" : 80,
+	    	"y" : 336,
 	    	"width" : 16,
 			"height" : 16,
 			"hovered" : false,
@@ -101,7 +101,7 @@ var items = {
 
 	    	"location" : "world",
 	    	"x" : 124,
-	    	"y" : 80,
+	    	"y" : 112,
 	    	"width" : 16,
 			"height" : 16,
 			"hovered" : false,
@@ -117,7 +117,7 @@ var items = {
 
 	    	"location" : "world",
 	    	"x" : 354,
-	    	"y" : 80,
+	    	"y" : 112,
 	    	"width" : 16,
 			"height" : 16,
 			"hovered" : false,

@@ -70,11 +70,8 @@ Entity = function(options)
 
 	
 	
-	entity.draw = function(context, color) 
+	entity.draw = function(context) 
 	{	
-		//for debuging
-		//context.fillStyle = color || "green";
-		//context.fillRect(entity.x, entity.y , entity.width, entity.height);
 		
 		if(entity.moving)
 		{
@@ -104,7 +101,7 @@ Entity = function(options)
 		}
 		
 	};
-	entity.update = function(dt, mouse, debug, actor)
+	entity.update = function(dt, engine)
 	{	
 		entity.wepon = {
 				x : entity.x + 5,
@@ -120,7 +117,7 @@ Entity = function(options)
 		
 
 		if (entity.type == "enemy") {
-			entity.AI(actor, dt);
+			entity.AI(engine.actor, dt);
 
 		};
 		

@@ -21,40 +21,17 @@
 		<script type="text/javascript" src="src/utilities/math.js"></script>
 		<script type="text/javascript" src="src/utilities/utilities.js"></script>
 		<script type="text/javascript" src="src/sprite.js"></script>
-		<script type="text/javascript" src="src/settings.js"></script> 
+		<script type="text/javascript" src="src/settings.js"></script>
 		<script type="text/javascript" src="src/world.js"></script>
 		<script type="text/javascript" src="src/entity.js"></script>
 		<script type="text/javascript" src="src/Actor.js"></script>
 		<script type="text/javascript" src="src/gui.js"></script>
+		<script type="text/javascript" src="src/stateMashine.js"></script>
+		<script type="text/javascript" src="src/states.js"></script>
 		<script type="text/javascript" src="src/purplust.js"></script>
 		<script type="text/javascript" src="game.js"></script>
 
 		</div>
-
-		<div id = "beforeGame">
-			
-			<div id = "playerSetup">
-
-				<p>Ievadiet spēlētāja vārdu</p>
-				<input type="nameInput" id="nameInput"></input>
-
-				<form id = "clasSel">
-					<p>Izvēlaties klasi! </p>
-					<input type="radio" name="classSelect" value="mage" >Burvis</input>
-					<input type="radio" name="classSelect" value="Warrior" >Cinitajs</input>
-				</form>
-
-				<form id = "raceSel">
-					<p>Izvēlaties Rasi! </p>
-					<input type="radio" name="raceSelect" value="Human" >Cilveks</input>
-					<input type="radio" name="raceSelect" value="Reptile" >Reptilis</input>
-				</form>
-				
-
-				<p>Saglabāt spēlētāja iestatijumus</p>
-				<button id = "submit" onclick="setupPlayer()"> Submit Player settings</button>
-
-			</div>
 
 			<button id = "start" onclick="startGame()"> Start Game</button>
 		</div>
@@ -76,72 +53,9 @@
 					
 				}
 
-
-				var bg = document.getElementById('beforeGame');
-				var plSetup = document.getElementById('playerSetup');
-				var starB = document.getElementById('start');
-			
-				var setupPlayer = function() {
-					var playerName = document.getElementById("nameInput").value;
-					var playerRace = getRadioValue(document.getElementById("raceSel"), "raceSelect");
-					var playerClass = getRadioValue(document.getElementById("clasSel"), "classSelect");
-					
-					//speletaja konta konstruktors
-					var p = new Actor({
-					    race : playerRace,
-					    klass : playerClass,
-					    characterName : playerName,
-					});
-
-					//speletaja entitijas konstruktors
-					p.entity = new Entity({
-					    x : 33,
-					    y : 33,
-					    width : 32,
-					    height : 32,
-					    map : m,
-					    type : "player",
-					});
-
-					//sis nebutu vajadzigs
-					//izlabot
-					p.healthBar = new gui.Bar({
-					    
-					    x : 175,
-					    y : game.height - 100,
-					    width : 220,
-					    height : 15,
-					    fullLenght : 10,
-					    currentLenght : 5,
-					});
-
-
-
-					p.entity.sprite = new Sprite({
-					            image : game.resources['player'].image,
-					            width: 32,
-					            height: 32,
-					            numberOfFrames : 3,
-					            ticksPerFrame : 3,
-					});
-
-					p.Name = new gui.Text({
-					                    x : p.entity.x,
-					                    y : p.entity.y - 3,
-					                    textSize : 20,
-					                    fillableText : playerName,
-					                });
-					game.actor = p;
-					gui.setActor(game.actor);
-
-
-					plSetup.style.display = "none";
-					starB.style.display = "table";
-				}
-
 				var startGame = function() {
-					bg.style.display = "none";
 
+					start.style.display = "none";
 					game.Run();
 
 				}
@@ -149,7 +63,8 @@
 
 
 		</div>
-		<h1 id = "end"> Game over</h1>
+		<h1 class = "end" id = "won"> Jus uzvarejat</h1>
+		<h1 class = "end" id = "lost"> Diemzel pretinieki uzvareja</h1>
 	  <!--
 		ir iespeja ari izveidot konkreta izmera canvas tagu ar konkretiem dimensiju izmeriem
 		bet sai situacijai tas nav nepieciesams jo canvas tags izveidojas dinamiski
@@ -164,7 +79,7 @@
 			overflow: hidden; /*  Disable scrollbars */
 			display: block;
 			border: 1px solid red;
-			background-color: gray;
+			background-color: lightgray;
 	   	}
 	   	#controls {
 	   		position: absolute;
@@ -180,27 +95,21 @@
 	   	#controlList {
 	   		display: none;
 	   	}
+	   	#start {
+	   		position: fixed;
+	   		left: 50%;
+	   		top: 50%;
+	   		margin: auto;
+	   		
+	   	}
 	   	#version {
 	   		position: absolute;
 	   		right: 0;
 	   		bottom: 0;
 	   	}
-	   	#beforeGame {
-	   		position: absolute;
-	   		top: 100px;
-	   		left:  100px;
-	   	}
 
-		#button {
-			display: none;
-		}
-		#start {
-			display: none;
-		}
-		#playerSetup {
-			display: table;
-		} 
-		#end {
+
+		.end {
 			position: absolute;
     		top: 50%;
     		left: 50%;

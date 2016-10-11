@@ -19,6 +19,7 @@ Actor = function(options){
 		actor.backpack = false;
 		actor.wepon = false;
 		actor.gotI = [];
+		actor.itemsGotten = 0;
 		actor.healthBar;
 		actor.Name;
 		
@@ -69,20 +70,24 @@ Actor = function(options){
 
 			}
 			engine.input.attack = false;
+			
 
 			for (var i = 0; i < items.itemsList.length; i++) {
 				
 				//collision between player and item on map
-				if (collides(actor.entity, items.itemsList[i])) {
+				if (collides(actor.entity, items.itemsList[i]) && items.itemsList[i].location == "world") {
+
 					items.itemsList[i].visible = false;
-
 					items.itemsList[i].location = "backpack";
-					actor.gotI[i] = items.itemsList[i];
-
-
+					actor.itemsGotten++;
+					actor.gotI[actor.itemsGotten-1] = items.itemsList[i];
 				}
 			};
+
+
 			actor.healthBar.update(actor.stats.health, actor.entity);
+
+			console.log(actor.itemsGotten);
 
 
 		};

@@ -56,6 +56,7 @@ GUI.prototype.Button = function(options)
 
 		button.hovered = false;
 		button.clicked = false;
+		button.active = false;
 
 		//button.draw(button.context);
 
@@ -95,29 +96,26 @@ GUI.prototype.Button = function(options)
 		};
 
 		button.update = function(engine) {
-
-			var clikedFlag = false;
 			
+			this.clicked = false; 
+
 			if (collides(this, engine.input.mouse)) {
 	            this.hovered = true;
-	            if (engine.input.mouse.clicked ) {
+	            if (engine.input.mouse.clicked) {
 	                this.clicked = true;
-	                clikedFlag = true;
+	                this.active = true;
 	            }
-
-
+	            else {
+	            	this.active = false;
+	            }
 
 		    } else {
 		        this.hovered = false;
 		    }
 
-		    if (!engine.input.mouse.clicked ) {
+		    if (!engine.input.mouse.clicked) {
 		    	this.clicked = false;
 		    }
-		    
-
-	        console.log("mouse cliked: " + engine.input.mouse.clicked);
-
 	    }
 }
 GUI.prototype.Bar = function(options){
@@ -288,6 +286,7 @@ GUI.prototype.Menu = function(options) {
 				});
 				menu.stats = sta;
 		}
+
 		menu.draw = function() {
 			//draw menu background
 			gui.context.save();
@@ -308,8 +307,6 @@ GUI.prototype.Menu = function(options) {
 				gui.context.restore();
 
 			gui.context.restore();
-
-
 		}
 
 		menu.update = function(engine) {
@@ -318,13 +315,22 @@ GUI.prototype.Menu = function(options) {
 				//console.log(input);
 				
 			};
+
+			menu.inventory.update(engine);
+			menu.stats.update(engine);
+
 			if (menu.items[0].clicked) {
-				menu.inventory.update(engine, menu.items[0].clicked);
+				menu.inventory.visible = changeBoolVal(menu.inventory.visible);
+				
 			};
 			
-			menu.stats.update(engine, menu.items[1].clicked);
+			if (menu.items[1].clicked) {
+				menu.stats.visible = changeBoolVal(menu.stats.visible);
+			};
 			
+			engine.input.mouse.clicked = false;
 		}
+
 		menu.slot = function(options) {
 			var slot = this;
 				slot.x = options.x;
@@ -366,7 +372,7 @@ GUI.prototype.Menu = function(options) {
 				inventory.itemSize = options.itemSize;
 
 				inventory.visible = false;
-				inventory.backp = 16;
+				inventory.backp = null;
 
 				var cc = 0;
 
@@ -394,7 +400,7 @@ GUI.prototype.Menu = function(options) {
 					var col;
 
 					if (id.hovered) {
-						col = "black";
+						col = "grey";
 					}
 					else {
 						col = id.color;
@@ -412,6 +418,15 @@ GUI.prototype.Menu = function(options) {
 					});
 					text1.draw();
 				};	
+				
+			}
+			inventory.drawVisible = function() {
+				if(!inventory.visible) {
+					inventory.visible = true;
+				}
+				else {
+					inventory.visible = false;
+				}
 				
 			}
 
@@ -443,12 +458,14 @@ GUI.prototype.Menu = function(options) {
 									var gridY =  inventory.y + (c * inventory.itemSize) + offsetY;
 
 								    // access to itemSlot array;
+
 									for (var i = 0; i < inventory.backp.length; i++) {
 										
 									  	var itemSlotId = inventory.backp[r + (c * itemsInRow)];
 
 										if(itemSlotId != 0 && (typeof itemSlotId != "undefined"))
-								  		{
+								  		{	
+
 								  			inventory.drawItems(gridX, gridY,itemSlotId);
 									    }
 									};   
@@ -489,20 +506,12 @@ GUI.prototype.Menu = function(options) {
 			};
 
 			inventory.update = function(engine, down) {
-				var clikedFlag = false;
-				if(down) {
-
-					inventory.visible = !inventory.visible;
-
-
-				}
 				
 				inventory.backp = gui.actor.gotI;
-				//console.log(inventory.backp);
 
 				for (item in inventory.backp) {
 					if(collides(engine.input.mouse, inventory.backp[item])) {
-						//console.log(inventory.backp[i]);
+
 						oldX = inventory.backp[item].x;
 						oldY = inventory.backp[item].y;
 
@@ -582,8 +591,4 @@ GUI.prototype.Menu = function(options) {
 	menu.initializeItems();
 }
 
-GUI.prototype.ui = function() {
-
-	var ui = this;
-}
 

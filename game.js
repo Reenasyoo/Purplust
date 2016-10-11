@@ -56,9 +56,10 @@ var m = new Map(ground, game.resources['tileset'].image);
 
 game.world = m;
 
+var ra = "lohs";
 
 var p = new Actor({
-    race : "human",
+    race : ra,
     klass : "playerClass",
     characterName : "playerName",
 });

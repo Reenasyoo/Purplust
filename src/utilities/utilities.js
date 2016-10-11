@@ -56,6 +56,29 @@ function getRadioValue(form, name) {
     return value;
 }
 
+function createHtmlElement(id, type, atributes) {
+    var element = null;
+    var body = document.getElementsByTagName("body")[0];
+    if(typeof(id) == "string") {
+        if(!body.hasAttribute(id)) { 
+            element = document.createElement(type);
+            element.setAtribute("id", id);   
+            body.appendChild(element);
+        } else {
+            element = document.getElementById(id);
+        }
+    }else {
+        console.log("Id is not string!");
+    }
+
+    return element;
+}
+
+function changeBoolVal(bool) {
+    var newBool = !bool;
+
+    return newBool;
+}
 
 
 /*

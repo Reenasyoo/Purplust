@@ -137,16 +137,23 @@ Purpl = function(canvas, width, height)
 			engine.input.mouse.x = e.clientX;
 			engine.input.mouse.y = e.clientY;
         	engine.input.mouse.down = (e.which == 1);
-			engine.input.mouse.clicked = (e.which == 1 && !engine.input.mouse.down);
+			//engine.input.mouse.clicked = (e.which == 1 && !engine.input.mouse.down);
+
+
+		});
+
+		window.addEventListener('click', function(e) {
+			//engine.input.mouse.changeClikedState();
+			
+			
+			//engine.input.mouse.clicked = false;
 
 		});
 
 		window.addEventListener('mousedown', function(e){
+			
 			engine.input.mouse.down = true;
-			engine.input.mouse.toogle = true;
 			engine.input.mouse.clicked = true;
-					 	
-
 
 		});
 
@@ -156,9 +163,12 @@ Purpl = function(canvas, width, height)
 
 		});
 
+
+
 		//for resizing canvas
 		engine.setCanvasDimentions();
 		engine.loop();	
+
 		
 
 	};
@@ -184,6 +194,9 @@ Purpl = function(canvas, width, height)
 			window.requestAnimationFrame(engine.loop);
 		};
 		// request next frame
+
+		//console.log("mouse cliked: " + engine.input.mouse.clicked + " mouse down: " + engine.input.mouse.down);
+		
 	}
 
 	engine.update = function(deltaTime, engine)
